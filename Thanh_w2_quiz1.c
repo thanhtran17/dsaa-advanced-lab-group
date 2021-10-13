@@ -33,7 +33,7 @@ int *createArray(int n){
 
 	srand(time(NULL));
 	for (i = 0; i < n; i++) 
-		*(a+i) = 1 + rand() % (num - 1);
+		*(a + i) = 1 + rand() % (n - 1);
 
 	return a;
 }
@@ -80,13 +80,14 @@ void quickSort3(
                ) 
 {
 	if (r <= l) return;
+	
   int i = l - 1, j = r;
 	int p = l - 1, q = r;
 	int k;
 
 	while(true) {
 		while (compare((char*) a + (++i) * size, (char*) a + r * size) < 0 );
-		while (compare((char*) a + r * size, (char*) a + (--j) * size) < 0 )
+		while (compare((char*) a + (--j) * size, (char*) a + r * size) > 0 )
 			if (j == l) break;
 
 		if (i >= j) break;
