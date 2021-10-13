@@ -8,3 +8,4 @@ DDT Group
 - Each branch is a week
 - Upload your own exercises directly to the branch of that week
 - Each member create ONE folder for yourself in each branch
+- Class materials & libraries also on "main"
