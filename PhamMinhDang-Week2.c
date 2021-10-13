@@ -12,6 +12,56 @@ void swap(int *a, int *b)
     *a = *b;
     *b = temp;
 }
+//Quiz
+void exchQ1(void *buf, size_t size, int i, int j)
+{
+    char *temp = (char *)malloc(sizeof(size));
+
+    memcpy(temp, (char *)buf + i * size, size);
+    memcpy((char *)buf + i * size, (char *)buf + j * size, size);
+    memcpy((char *)buf + j * size, temp, size);
+
+    free(temp);
+}
+void quickSortQ1(void *a, int size, int l, int r, int (*compare)(void *, void *))
+{
+    if (r <= l)
+        return;
+    int i = l - 1, j = r;
+    int p = l - 1, q = r;
+    int k;
+
+    while (1)
+    {
+        while (compare((char *)a + (++i) * size, (char *)a + r * size) < 0)
+            ;
+        while (compare((char *)a + r * size, (char *)a + (--j) * size) < 0)
+            if (j == l)
+                break;
+
+        if (i >= j)
+            break;
+        exchQ1(a, size, i, j);
+
+        if (compare((char *)a + i * size, (char *)a + r * size) == 0)
+            exchQ1(a, size, ++p, i);
+        if (compare((char *)a + j * size, (char *)a + r * size) == 0)
+            exchQ1(a, size, --q, j);
+    }
+
+    exchQ1(a, size, i, r);
+    j = i - 1;
+    i = i + 1;
+
+    for (int k = l; k <= p; k++)
+        exchQ1(a, size, k, j--);
+    for (int k = r - 1; k >= q; k--)
+        exchQ1(a, size, k, i++);
+
+    quickSortQ1(a, size, l, j, compare);
+    quickSortQ1(a, size, i, r, compare);
+}
+//Quiz 2
 void testJval()
 {
     Jval a;
