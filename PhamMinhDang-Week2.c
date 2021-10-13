@@ -162,8 +162,8 @@ void sort_gen(Jval x[], int l, int r, int (*compare)(Jval *, Jval *))
         exch_jval(&x[k], &x[j]);
     for (k = r - 1; k > q; k--, i++)
         exch_jval(&x[i], &x[k]);
-    sort_i(x, l, j, compare);
-    sort_i(x, i, r, compare);
+    sort_gen(x, l, j, compare);
+    sort_gen(x, i, r, compare);
 }
 // 3-way partition based quick sort
 void quicksort3Way(int x[], int l, int r, int (*compare)(void *, void *), void exch(void *, void *))
@@ -416,12 +416,11 @@ int main()
     // time_t start;
     // time_t end;
     // start = clock();
-    quicksort3Way(arr1, 0, n - 1, compare, exch); // sort 3 ways
+    quickSortQ1(arr1, sizeof(int), 0, n - 1, compare); // sort 3 ways
     printSort(arr1, n);
-
-    Jval *arr3 = create_array_i(n);
-    sort_gen(arr3, 0, n - 1, compare_i);
-    printSortJval(arr3, n);
+    // Jval *arr3 = create_array_i(n);
+    // sort_gen(arr3, 0, n - 1, compare_i);
+    // printSortJval(arr3, n);
     // end = clock();
     // printf("3 Ways run in %f seconds.\n", (double)(end - start) / CLOCKS_PER_SEC);
     // time_t start1;
