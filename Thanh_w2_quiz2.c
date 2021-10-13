@@ -6,7 +6,7 @@
 #include <time.h>
 #include <math.h>
 
-#define num 100
+#define num 1000
 //------------------------------------------------------------
 Jval* create_array_i (int n) {
 	Jval * a = (Jval *) malloc(n * sizeof(Jval));
@@ -41,7 +41,7 @@ void exch_jval(void *a, void *b)
     *((Jval *)b) = temp;
 }
 //------------------------------------------------------------
-void sort_gen (
+void sort_i (
                Jval a[], int size, int l, int r, 
                int (*compare_i)(Jval*, Jval*) 
               )
@@ -51,8 +51,6 @@ void sort_gen (
     int i = l - 1, j = r;
     int p = l - 1, q = r; 
     int k;
-    Jval pivot = a[r];
-
 
     while(true){
       while (compare_i(&a[++i], &a[r]) < 0);
@@ -62,38 +60,40 @@ void sort_gen (
       if (i >= j) break;
       exch_jval(&a[i], &a[j]);
       
-      if (compare_i(&a[i], &pivot) == 0)
+      if (compare_i(&a[i], &a[r]) == 0)
         exch_jval(&a[++p], &a[i]);
-      if (compare_i(&a[j], &pivot) == 0)
+      if (compare_i(&a[j], &a[r]) == 0)
         exch_jval(&a[--q], &a[j]);
     }
 
     exch_jval(&a[i], &a[r]);
     j = i - 1;
     i = i + 1;
-    
+
     for (k = l; k < p; k++, j--)
       exch_jval(&a[k], &a[j]);
     for (k = r - 1; k > q; k--, i++)
       exch_jval(&a[i], &a[k]);
 
-    sort_gen(a, size, l, j, compare_i);
-    sort_gen(a, size, i, r, compare_i);
-}
-//------------------------------------------------------------
-void sort_i(Jval a[], int size, int l, int r)
-{
-  sort_gen(a, size, l, r, compare_i);
+    sort_i(a, size, l, j, compare_i);
+    sort_i(a, size, i, r, compare_i);
 }
 //------------------------------------------------------------
 int main()
 {
   Jval *a;
+  double start3, end3, intervalThreeWay;
 
   a = create_array_i(num);
+  //printArray(a, num);
+
+  start3 = clock();
+  sort_i(a, sizeof(int), 0, num, compare_i);
+	end3 = clock();
+  intervalThreeWay = (double) (end3 - start3) / CLOCKS_PER_SEC;
+
   printArray(a, num);
-  sort_i(a, sizeof(int), 0, num);
-  printArray(a, num);
+	printf("3-way partition quicksort takes: %f seconds \n", intervalThreeWay);
 
   free(a);
 
