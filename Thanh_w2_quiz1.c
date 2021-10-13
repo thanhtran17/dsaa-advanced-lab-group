@@ -28,7 +28,7 @@ int *createArray(int n){
 
 	srand(time(NULL));
 	for (i = 0; i < n; i++) 
-		*(a+i) = 1 + rand() % 9;
+		*(a+i) = 1 + rand() % (num - 1);
 
 	return a;
 }
@@ -144,39 +144,36 @@ int main()
   b = dumbArray(a, num);
   c = dumbArray(a, num);
   //
-  srand(time(NULL));
-  for (i = 0; i < num; i++)
-    a[i] = rand() % num;
-  
   start2 = clock();
   //printArray(a, num);
 	quickSort(a, 0, num - 1, exch);
   //printArray(a, num);
   end2 = clock();
   intervalTwoWay = (double) (end2 - start2) / CLOCKS_PER_SEC;
-  
   printf("Index for item: \n%d\n", search(a, sizeof(int), 0, num - 1, &item, compare));
 	
-
+  //
   start3 = clock();
   //printArray(b, num);
   quickSort3(b, 0, num - 1);
   //printArray(b, num);
 	end3 = clock();
   intervalThreeWay = (double) (end3 - start3) / CLOCKS_PER_SEC;
+  printf("Index for item: \n%d\n", search(b, sizeof(int), 0, num - 1, &item, compare));
 
+  //
 	start_bi = clock();
-  //printArray(b, num);
+  //printArray(c, num);
   qsort(c, num - 1, sizeof(int), compare);
-  //printArray(b, num);
+  //printArray(c, num);
 	end_bi = clock();
   intervalBuiltIn = (double) (end_bi - start_bi) / CLOCKS_PER_SEC;
-
+  printf("Index for item: \n%d\n", search(c, sizeof(int), 0, num - 1, &item, compare));
+  
+  //
 	printf("2-way partition quicksort takes: %f seconds \n", intervalTwoWay);
 	printf("3-way partition quicksort takes: %f seconds \n", intervalThreeWay);
 	printf("built-in quicksort takes: %f seconds \n", intervalBuiltIn);
-
-
 
 	free(a);
 	free(b);
