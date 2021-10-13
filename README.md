@@ -1,4 +1,5 @@
 # week 2
+
 - generic programming
-- binary search 
+- binary search
 - the Jval type

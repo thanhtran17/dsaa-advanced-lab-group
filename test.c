@@ -3,7 +3,7 @@
 #include <time.h>
 #include <string.h>
 #include <stdbool.h>
-#define num 100
+#define num 10000000
 //------------------------------------------------------------------------
 int compare(void * x, void * y)
 {
@@ -15,13 +15,11 @@ int compare(void * x, void * y)
 	return m > n ? 1 : -1;
 }
 //----------------------------------------------------------------------------
-void exch (void* a, int size, int i, int j)
-{  
-    char* temp = (char*)malloc(size);
-    memcpy(temp, (char*) a + i*size, size);
-    memcpy((char*) a + i*size, (char*) a + j*size, size);
-    memcpy((char*) a + j*size, temp, size);
-    free(temp);
+void exch(void *a, void *b)
+{
+    int temp = *((int *)a);
+    *((int *)a) = *((int *)b);
+    *((int *)b) = temp;
 }
 //------------------------------------------------------------------------
 int *createArray(int n){
@@ -71,39 +69,68 @@ int search(
   }
 }
 //------------------------------------------------------------------------
-void quickSort3(void* a, int size, int l, int r,
-                int (*compare) (void*, void*)
-                ) 
+int partition (int a[], int l, int r,                
+               void (*exch) (void*, void*))
 {
+  int pivot = a[r];
+  int left = l,
+  		right = r - 1;
+
+  while(true) {
+    while(left <= right && a[left] < pivot) left++;
+    while(left <= right && a[right] > pivot) right--;
+
+    if (left >= right) break;
+    exch(&a[left], &a[right]);
+    left++;
+    right--;
+  }
+  
+	exch(&a[left], &a[r]);
+  return left;
+}
+//------------------------------------------------------------------------
+void quickSort(void* buf, int l, int r,              
+               void (*exch) (void*, void*))
+{
+  if (l < r){
+    int pi = partition(buf, l, r, exch);
+    quickSort(buf, l, pi - 1, exch);
+    quickSort(buf, pi + 1, r, exch);
+  }
+}
+//------------------------------------------------------------------------
+void quickSort3(int a[], int l, int r) {
 	if (r > l){ 
 		int i = l - 1, j = r;
 		int p = l - 1, q = r;
 		int k;
 
 		while(true) {
-      while (compare((char*) a + (++i) * size , (char*) a + r * size) < 0);
-			while (compare((char*) a + r * size, (char*) a + (--j) * size) < 0) 
+			while (a[++i] < a[r]);
+			while (a[r] < a[--j]) 
 				if (j == l) break;
-			if (i >= j) break;
-			exch(a, size, i, j);
 
-			if (compare((char*) a + j * size, (char*) a + r * size) == 0)
-		  	exch(a, size, ++p, i);
-			if (compare((char*) a + j * size, (char*) a + r * size) == 0) 
-				exch(a, size, --q, j);
+			if (i >= j) break;
+			exch(&a[i], &a[j]);
+
+			if (a[i] == a[r])
+		  	exch(&a[++p], &a[i]);
+			if (a[j] == a[r]) 
+				exch(&a[--q], &a[j]);
 		}
 
-		exch(a, size, i ,r);
+		exch(&a[i], &a[r]);
 		j = i - 1;
 		i = i + 1;
 	
 		for (k = l ; k <= p; k++) 
-			exch(a, size, k, j--);		
+			exch(&a[k], &a[j--]);		
 		for (k = r - 1; k >= q; k--) 
-			exch(a, size, k, i++);
+			exch(&a[k], &a[i++]);
 	
-		quickSort3(a, size, l, j, compare);
-		quickSort3(a, size, l, j, compare);
+		quickSort3(a, l, j);
+		quickSort3(a, i, r);
 	}
 }
 //------------------------------------------------------------------------
@@ -115,31 +142,42 @@ int main()
 
   a = createArray(num);
   b = dumbArray(a, num);
-
+  c = dumbArray(a, num);
+  //
+  start2 = clock();
+  //printArray(a, num);
+	quickSort(a, 0, num - 1, exch);
+  //printArray(a, num);
+  end2 = clock();
+  intervalTwoWay = (double) (end2 - start2) / CLOCKS_PER_SEC;
+  printf("Index for item: \n%d\n", search(a, sizeof(int), 0, num - 1, &item, compare));
+	
   //
   start3 = clock();
-  printArray(a, num);
-  quickSort3(a, num, 0, num - 1, compare);
-  printArray(a, num);
+  //printArray(b, num);
+  quickSort3(b, 0, num - 1);
+  //printArray(b, num);
 	end3 = clock();
   intervalThreeWay = (double) (end3 - start3) / CLOCKS_PER_SEC;
-  printf("Index for item: \n%d\n", search(a, sizeof(int), 0, num - 1, &item, compare));
+  printf("Index for item: \n%d\n", search(b, sizeof(int), 0, num - 1, &item, compare));
 
   //
 	start_bi = clock();
-  printArray(b, num);
-  qsort(b, num - 1, sizeof(int), compare);
-  printArray(b, num);
+  //printArray(c, num);
+  qsort(c, num - 1, sizeof(int), compare);
+  //printArray(c, num);
 	end_bi = clock();
   intervalBuiltIn = (double) (end_bi - start_bi) / CLOCKS_PER_SEC;
-  printf("Index for item: \n%d\n", search(b, sizeof(int), 0, num - 1, &item, compare));
+  printf("Index for item: \n%d\n", search(c, sizeof(int), 0, num - 1, &item, compare));
   
   //
+	printf("2-way partition quicksort takes: %f seconds \n", intervalTwoWay);
 	printf("3-way partition quicksort takes: %f seconds \n", intervalThreeWay);
 	printf("built-in quicksort takes: %f seconds \n", intervalBuiltIn);
 
 	free(a);
 	free(b);
+	free(c);
 	
   return 0;
 }
