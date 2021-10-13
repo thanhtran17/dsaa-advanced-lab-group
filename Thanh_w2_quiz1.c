@@ -4,7 +4,7 @@
 #include <string.h>
 #include <assert.h>
 #include <stdbool.h>
-#define num 100
+#define num 10000000
 //------------------------------------------------------------------------
 int compare(void * x, void * y)
 {
@@ -123,9 +123,9 @@ int main()
   //
   printf("-- 3-way qsort --\n");
   start3 = clock();
-  printArray(a, num);
+  //printArray(a, num);
   quickSort3(a, sizeof(int), 0, num - 1, compare);
-  printArray(a, num);
+  //printArray(a, num);
 	end3 = clock();
   intervalThreeWay = (double) (end3 - start3) / CLOCKS_PER_SEC;
   printf("Index for item: \n%d\n", search(a, sizeof(int), 0, num - 1, &item, compare));
