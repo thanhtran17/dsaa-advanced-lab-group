@@ -89,24 +89,37 @@ void dropPhoneBook(PhoneBook* book)
 //----------------------------------------------------------------------
 void addPhoneNumber(char* name, char* number, PhoneBook* book)
 {
+  int existed = 0;
   (book->total)++;
-  printf("Total book(s): %d\n", book->total);
+
+  for (int i = 1; i <= book->total; i++)
+    if (strcmp(name, book->entries[i]->name) == 0){
+      strcpy(book->entries[i]->number, number);
+      existed = 1;
+    }
+
+  if (existed == 1){
+    (book->total)--;
+    printf("--> Name already exist!\nEntry \"%s\"'s number replaced with %s\n", name, number);
+  }
+  else {
+    printf("Total book(s): %d\n", book->total);
   
-  // if the entry exists, the value should be overwritten
-  strcpy(book->entries[book->total]->name, name);
-  strcpy(book->entries[book->total]->number, number);
+    strcpy(book->entries[book->total]->name, name);
+    strcpy(book->entries[book->total]->number, number);
 
-  printf("Entry added: \n");
-
-  if (book->size == book->total){
-    book->entries = (PhoneEntry*) realloc(book->entries, sizeof(PhoneEntry) * (book->total + INCREMENTAL_SIZE));
-    book->size += INCREMENTAL_SIZE;
+    if (book->size == book->total){
+      book->entries = (PhoneEntry*) realloc(book->entries, sizeof(PhoneEntry) * (book->total + INCREMENTAL_SIZE));
+      book->size += INCREMENTAL_SIZE;
+    }
   }
 
   printf("Print all entries' names: \n");
   for (int i = 1; i <= book->total; i++)
     printf("--> %s %s\n", book->entries[i]->name, book->entries[i]->number);
   printf("\n");
+
+  return;
 }
 //----------------------------------------------------------------------
 void getPhoneNumber(char* name, PhoneBook* book){
