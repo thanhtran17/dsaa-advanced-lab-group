@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#define INITIAL_SIZE 1
+#define INITIAL_SIZE 100
 #define INCREMENTAL_SIZE 10
 
 typedef struct
@@ -104,10 +104,10 @@ int main()
         printf("______SYMBOL_TABLE______\n");
         printf("Choose your choice:\n");
         printf("1. Add entry to table \n");
-        printf("2. Drop table \n");
+        printf("2. Print table \n");
         printf("3. Get detail entry \n");
-        printf("4. Out\n");
-        printf("5. Print table\n");
+        printf("4. Delete table\n");
+        printf("5. Exit\n");
         scanf("%d", &choice);
         switch (choice)
         {
@@ -119,8 +119,8 @@ int main()
             addEntry(name, &num, table);
             break;
         case 2:
-            dropSymbolTable(table);
-            return 0;
+            printAll(table);
+            break;
         case 3:
             printf("Input name: \n");
             scanf("%s", name);
@@ -128,10 +128,10 @@ int main()
             printf("Found object : %s %d\n", (char *)needEntry->key, *(long *)needEntry->value);
             break;
         case 4:
+            dropSymbolTable(table);
             return 0;
         case 5:
-            printAll(table);
-            break;
+            return 0;
         }
     }
 }
