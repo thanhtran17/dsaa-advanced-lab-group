@@ -97,7 +97,7 @@ int main()
 {
     SymbolTable *table = createSymbolTable(makePhone, comparePhone);
     int choice;
-    char *name;
+    char name[100];
     long num;
     while (1)
     {
