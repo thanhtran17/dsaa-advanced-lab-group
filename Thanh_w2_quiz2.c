@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include <time.h>
 #include <math.h>
+#include "jval.h"
 
 #define num 1000
 //------------------------------------------------------------

@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-Jval *crear_arr(int n){
+Jval *createarr(int n){
     Jval *arr = (Jval*)malloc(n * sizeof(Jval));
     srand(time(NULL));
     for (int i = 0; i<n; i++){
