@@ -59,11 +59,6 @@ void quickSort(int a[], int low, int high)
   }
 }
 //------------------------------------------------------------------------
-int partition3 (int a[], int low, int high)
-{
-	
-}
-//------------------------------------------------------------------------
 void quickSort3(int a[], int low, int high) {
 	if (high > low){ 
 		int i = low - 1, j = high;
@@ -127,23 +122,17 @@ int main()
   c = dumbArray(a, num);
 
 	start2 = clock();
-  //printArray(a, num);
 	quickSort(a, 0, num - 1);
-  //printArray(a, num);
   end2 = clock();
   intervalTwoWay = (double) (end2 - start2) / CLOCKS_PER_SEC;
   
 	start3 = clock();
-  //printArray(b, num);
   quickSort3(b, 0, num - 1);
-  //printArray(b, num);
 	end3 = clock();
   intervalThreeWay = (double) (end3 - start3) / CLOCKS_PER_SEC;
 
 	start_bi = clock();
-  //printArray(b, num);
   qsort(c, num - 1, sizeof(int), int_compare);
-  //printArray(b, num);
 	end_bi = clock();
   intervalBuiltIn = (double) (end_bi - start_bi) / CLOCKS_PER_SEC;
 
