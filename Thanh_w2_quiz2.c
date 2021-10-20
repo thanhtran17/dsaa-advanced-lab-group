@@ -1,100 +1,112 @@
 #include <stdio.h>
+#include <math.h>
+#include "jval.h"
 #include <stdlib.h>
 #include <time.h>
-#include "jval.h"
-#include "jval.c"
-//---------------------------------------------------------------------------------
-void* memcpy(void* region1,const void* region2,size_t n) {
-	const char* first = (const char*) region2;
-	const char* last = ((const char*) region2) + n;
-	char* result = (char*) region1;
-	while (first != last) *result++ = *first++;
-	return result;
-}
-//---------------------------------------------------------------------------------
-void swap(Jval buf[],int i,int j){
-    Jval cmp = buf[i];
-    buf[i] = buf[j];
-    buf[j] = cmp;
-}
-//---------------------------------------------------------------------------------
-int int_compare(Jval *a,Jval *b){
-	Jval *x,*y;
-	x=a;
-	y=b;
-	if(x->i==y->i)return 0;
-	return x->i>y->i?1:-1;
-}
-//---------------------------------------------------------------------------------
-void sort_gen(Jval arr[], int l, int r,int (*compare)(Jval*, Jval*),void (*swap)(Jval*,int,int)) {
-	if (r <= l) return;
-	int i = l-1, j = r;
-	int p = l-1, q = r;
-	int k;
-	while(1)	{
-		while (compare(&arr[++i],&arr[r])<0);
-		while (compare(&arr[r],&arr[--j])<0) if (j == l) break;		
-		if (i >= j) break;
-		swap(arr,i,j);
-		if (compare(&arr[i],&arr[r])==0) swap(arr,++p,i);
-		if (compare(&arr[j],&arr[r])==0) swap(arr,--q,j);
-	}
-	swap(arr,i,r);
-	j = i - 1;
-	i = i + 1;		
-	for (k = l ; k <= p; k++) swap(arr,k,j--);
-	for (k = r-1; k >= q; k--) swap(arr,k,i++);	
-	sort_gen(arr,l, j,compare,swap);
-	sort_gen(arr,i, r,compare,swap);
-}
+#include <string.h>
 
-//---------------------------------------------------------------------------------
-int search_gen(Jval a[],int l, int r,Jval item,int (*compare)(Jval*, Jval*)) {
-	int i, res;
-	if (r < l) return -1;
-	i = (l + r)/2;
-	res = compare(&item,&a[i]);
-	if (res==0) return i;
-	else if (res < 0) return search_gen(a, l, i-1, item, compare);
-	else return search_gen(a, i+1, r, item, compare);
+#define SMALL_NUMBER 20
+#define HUGE_NUMBER 100000
+//--------------------------------------------------------------------
+int compare_i(Jval *a, Jval *b)
+{
+    return ((*a).i > (*b).i)
+               ? 1
+           : ((*a).i == (*b).i)
+               ? 0
+               : -1;
 }
-
-//---------------------------------------------------------------------------------
-int compare_i(Jval* a, Jval* b) {
-	if ( jval_i(*a)==jval_i(*b) ) return 0;
-	if ( jval_i(*a) < jval_i(*b) ) return -1;
-	else return 1;
+//--------------------------------------------------------------------
+void exch_jval(void *a, void *b)
+{
+    Jval temp = *((Jval *)a);
+    *((Jval *)a) = *((Jval *)b);
+    *((Jval *)b) = temp;
 }
-
-//---------------------------------------------------------------------------------
-void sort_i (Jval a[], int l, int r) {
-	sort_gen(a, l, r, compare_i,swap);
+//--------------------------------------------------------------------
+Jval *create_array_i(int size)
+{
+    Jval *arr = (Jval *)malloc(sizeof(Jval) * size);
+    srand(time(NULL));
+    for (int j = 0; j < size; j++)
+    {
+        arr[j].i = rand() % size;
+    }
+    return arr;
 }
-
-//---------------------------------------------------------------------------------
-int search_i (Jval a[], int l, int r, int x) {
-	return search_gen(a, l, r, new_jval_i(x), compare_i);
+//--------------------------------------------------------------------
+int search_gen(Jval arr[], int l, int r, int x)
+{
+    if (r >= l)
+    {
+        int mid = l + (r - l) / 2;
+        if (arr[mid].i == x)
+            return mid;
+        if (arr[mid].i > x)
+            return search_gen(arr, l, mid - 1, x);
+        return search_gen(arr, mid + 1, r, x);
+    }
+    return -1;
 }
-
-//---------------------------------------------------------------------------------
-Jval* create_array_i (int n) {
-	int i;
-	Jval * array = (Jval *) malloc(sizeof(Jval)*n);
-	for (i=0; i<n; i++) array[i] = new_jval_i( rand() );
-	return array;
+//--------------------------------------------------------------------
+void sort_gen(Jval x[], int l, int r, int (*compare)(Jval *, Jval *))
+{
+    int i, j, p, q, k;
+    Jval pivot;
+    i = l - 1;
+    j = r;
+    p = l - 1;
+    q = r;
+    pivot = x[r];
+    if (r <= l)
+        return;
+    for (;;)
+    {
+        while (compare(&x[++i], &pivot) == -1)
+            ;
+        while (compare(&x[--j], &pivot) == 1)
+        {
+            if (j == l)
+                break;
+        }
+        if (i >= j)
+            break;
+        exch_jval(&x[i], &x[j]);
+        if (compare(&x[i], &pivot) == 0)
+        {
+            p++;
+            exch_jval(&x[p], &x[i]);
+        }
+        if (compare(&x[j], &pivot) == 0)
+        {
+            q--;
+            exch_jval(&x[q], &x[j]);
+        }
+    }
+    exch_jval(&x[i], &x[r]);
+    j = i - 1;
+    i++;
+    for (k = l; k < p; k++, j--)
+        exch_jval(&x[k], &x[j]);
+    for (k = r - 1; k > q; k--, i++)
+        exch_jval(&x[i], &x[k]);
+    sort_gen(x, l, j, compare);
+    sort_gen(x, i, r, compare);
 }
-
-//---------------------------------------------------------------------------------
+//--------------------------------------------------------------------
+void printSortJval(Jval arr[], int length)
+{
+    for (int j = 0; j < length; j++)
+    {
+        printf("%d ", arr[j].i);
+    }
+    printf("\n");
+}
+//--------------------------------------------------------------------
 int main()
-{	
-	int i;
-    int n=10,item=5,res;
-
-   	Jval *b;
-	b=create_array_i(n);
-	sort_i(b,0,n-1);
-	for(i=0;i<n;i++) printf("%d ",b[i].i);
-	
-    return 0;
+{
+    int n = SMALL_NUMBER;
+    Jval *arr3 = create_array_i(n);
+    sort_gen(arr3, 0, n - 1, compare_i);
+    printSortJval(arr3, n);
 }
-//---------------------------------------------------------------------------------
