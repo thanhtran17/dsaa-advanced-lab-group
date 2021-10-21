@@ -34,7 +34,7 @@ static void jrb_iprint_tree(JRB t, int level);
 #define setext(n) n->internal = 0
 #define setnormal(n) n->roothead = 0
 #define sibling(n) ((isleft(n)) ? n->parent->blink : n->parent->flink)
- 
+//------------------------------------------------------------
 static void insert(JRB item, JRB list)	/* Inserts to the end of a list */
 {
   JRB last_node;
@@ -46,13 +46,13 @@ static void insert(JRB item, JRB list)	/* Inserts to the end of a list */
   item->blink = last_node;
   item->flink = list;
 }
- 
+ //------------------------------------------------------------
 static void delete_item(JRB item)		/* Deletes an arbitrary iterm */
 {
   item->flink->blink = item->blink;
   item->blink->flink = item->flink;
 }
-
+//------------------------------------------------------------
 #define mk_new_ext(new, kkkey, vvval) {\
   new = (JRB) malloc(sizeof(struct jrb_node));\
   new->val = vvval;\
@@ -61,7 +61,7 @@ static void delete_item(JRB item)		/* Deletes an arbitrary iterm */
   setblack(new);\
   setnormal(new);\
 }
- 
+//------------------------------------------------------------
 static void mk_new_int(JRB l, JRB r, JRB p, int il)
 {
   JRB newnode;
@@ -90,9 +90,9 @@ static void mk_new_int(JRB l, JRB r, JRB p, int il)
     p->blink = newnode;
   }
   recolor(newnode);
-}  
-  
-   
+}    
+
+//------------------------------------------------------------
 JRB lprev(JRB n)
 {
   if (ishead(n)) return n;
@@ -102,7 +102,8 @@ JRB lprev(JRB n)
   }
   return n->parent;
 }
- 
+
+//------------------------------------------------------------
 JRB rprev(JRB n)
 {
   if (ishead(n)) return n;
@@ -112,7 +113,7 @@ JRB rprev(JRB n)
   }
   return n->parent;
 }
- 
+//------------------------------------------------------------
 JRB make_jrb()
 {
   JRB head;
@@ -125,7 +126,8 @@ JRB make_jrb()
   sethead(head);
   return head;
 }
- 
+
+//------------------------------------------------------------
 JRB jrb_find_gte_str(JRB n, char *key, int *fnd)
 {
   int cmp;
@@ -153,7 +155,8 @@ JRB jrb_find_gte_str(JRB n, char *key, int *fnd)
     if (cmp < 0) n = n->flink ; else n = n->blink;
   }
 }
- 
+
+//------------------------------------------------------------
 JRB jrb_find_str(JRB n, char *key)
 {
   int fnd;
@@ -161,7 +164,8 @@ JRB jrb_find_str(JRB n, char *key)
   j = jrb_find_gte_str(n, key, &fnd);
   if (fnd) return j; else return NULL;
 }
- 
+
+//------------------------------------------------------------
 JRB jrb_find_gte_int(JRB n, int ikey, int *fnd)
 {
   *fnd = 0;
@@ -185,7 +189,8 @@ JRB jrb_find_gte_int(JRB n, int ikey, int *fnd)
     n = (ikey < getlext(n)->key.i) ? n->flink : n->blink;
   }
 }
- 
+
+//------------------------------------------------------------
 JRB jrb_find_int(JRB n, int ikey)
 {
   int fnd;
@@ -194,7 +199,8 @@ JRB jrb_find_int(JRB n, int ikey)
   j = jrb_find_gte_int(n, ikey, &fnd);
   if (fnd) return j; else return NULL;
 }
- 
+
+//------------------------------------------------------------
 JRB jrb_find_gte_dbl(JRB n, double dkey, int *fnd)
 {
   *fnd = 0;
@@ -218,7 +224,8 @@ JRB jrb_find_gte_dbl(JRB n, double dkey, int *fnd)
     n = (dkey < getlext(n)->key.d) ? n->flink : n->blink;
   }
 }
- 
+
+//------------------------------------------------------------
 JRB jrb_find_dbl(JRB n, double dkey)
 {
   int fnd;
@@ -227,7 +234,8 @@ JRB jrb_find_dbl(JRB n, double dkey)
   j = jrb_find_gte_dbl(n, dkey, &fnd);
   if (fnd) return j; else return NULL;
 }
- 
+
+//------------------------------------------------------------
 JRB jrb_find_gte_gen(JRB n, Jval key,int (*fxn)(Jval, Jval), int *fnd)
 {
   int cmp;
@@ -255,7 +263,8 @@ JRB jrb_find_gte_gen(JRB n, Jval key,int (*fxn)(Jval, Jval), int *fnd)
     if (cmp < 0) n = n->flink ; else n = n->blink;
   }
 }
- 
+
+//------------------------------------------------------------
 JRB jrb_find_gen(JRB n, Jval key, int (*fxn)(Jval, Jval))
 {
   int fnd;
@@ -264,7 +273,8 @@ JRB jrb_find_gen(JRB n, Jval key, int (*fxn)(Jval, Jval))
   j = jrb_find_gte_gen(n, key, fxn, &fnd);
   if (fnd) return j; else return NULL;
 }
- 
+
+//------------------------------------------------------------
 static JRB jrb_insert_b(JRB n, Jval key, Jval val)
 {
   JRB newleft, newright, newnode, list, p;
@@ -297,7 +307,8 @@ static JRB jrb_insert_b(JRB n, Jval key, Jval val)
     return newleft;    
   }
 }
- 
+
+//------------------------------------------------------------
 static void recolor(JRB n)
 {  
   JRB p, gp, s;
@@ -342,7 +353,8 @@ static void recolor(JRB n)
     setred(gp);
   }
 }
- 
+
+//------------------------------------------------------------
 static void single_rotate(JRB y, int l)
 {
   int rl, ir;
@@ -387,7 +399,7 @@ static void single_rotate(JRB y, int l)
     }
   }
 }
-    
+//------------------------------------------------------------
 void jrb_delete_node(JRB n)
 {
   JRB s, p, gp;
@@ -508,8 +520,8 @@ void jrb_delete_node(JRB n)
     }
   }
 }
- 
- 
+
+//------------------------------------------------------------
 void jrb_print_tree(JRB t, int level)
 {
   int i;
@@ -534,7 +546,7 @@ void jrb_print_tree(JRB t, int level)
     }
   }
 }
- 
+//------------------------------------------------------------
 void jrb_iprint_tree(JRB t, int level)
 {
   int i;
@@ -561,7 +573,7 @@ void jrb_iprint_tree(JRB t, int level)
     }
   }
 }
-      
+//------------------------------------------------------------
 int jrb_nblack(JRB n)
 {
   int nb;
@@ -577,7 +589,8 @@ int jrb_nblack(JRB n)
   }
   return nb;
 }
- 
+
+//------------------------------------------------------------
 int jrb_plength(JRB n)
 {
   int pl;
@@ -593,7 +606,8 @@ int jrb_plength(JRB n)
   }
   return pl;
 }
- 
+
+//------------------------------------------------------------
 void jrb_free_tree(JRB n)
 {
   if (!ishead(n)) {
@@ -606,17 +620,19 @@ void jrb_free_tree(JRB n)
   }
   free(n);
 }
- 
+//------------------------------------------------------------
 Jval jrb_val(JRB n)
 {
   return n->val;
 }
- 
+
+//------------------------------------------------------------ 
 static JRB jrb_insert_a(JRB nd, Jval key, Jval val)
 {
   return jrb_insert_b(nd->flink, key, val);
 }
 
+//------------------------------------------------------------
 JRB jrb_insert_str(JRB tree, char *key, Jval val)
 {
   Jval k;
@@ -626,6 +642,7 @@ JRB jrb_insert_str(JRB tree, char *key, Jval val)
   return jrb_insert_b(jrb_find_gte_str(tree, key, &fnd), k, val);
 }
 
+//------------------------------------------------------------
 JRB jrb_insert_int(JRB tree, int ikey, Jval val)
 {
   Jval k;
@@ -635,6 +652,7 @@ JRB jrb_insert_int(JRB tree, int ikey, Jval val)
   return jrb_insert_b(jrb_find_gte_int(tree, ikey, &fnd), k, val);
 }
 
+//------------------------------------------------------------
 JRB jrb_insert_dbl(JRB tree, double dkey, Jval val)
 {
   Jval k;
@@ -644,6 +662,7 @@ JRB jrb_insert_dbl(JRB tree, double dkey, Jval val)
   return jrb_insert_b(jrb_find_gte_dbl(tree, dkey, &fnd), k, val);
 }
 
+//------------------------------------------------------------
 JRB jrb_insert_gen(JRB tree, Jval key, Jval val,
                           int (*func)(Jval, Jval))
 { 
@@ -651,5 +670,8 @@ JRB jrb_insert_gen(JRB tree, Jval key, Jval val,
 
   return jrb_insert_b(jrb_find_gte_gen(tree, key, func, &fnd), key, val);
 }
+
+//------------------------------------------------------------
+
 
 
