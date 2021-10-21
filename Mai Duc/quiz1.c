@@ -22,7 +22,6 @@ int main(){
     JRB phonebook = make_jrb();
     int choice;
     char name[100]; long phone;
-
     do {
         printf("1. Print the phonebook.\n");
         printf("2. Add new phonenumber\n");
@@ -43,7 +42,7 @@ int main(){
             scanf("%s", name);
             printf("Input phonenumber: ");
             scanf("%ld", &phone);
-            add_phone(phonebook, name, phone);
+            add_phone(phonebook, strdup(name), phone);
             break;
         case 3: 
             printf("Input name: ");
@@ -57,6 +56,7 @@ int main(){
             break;
         case 5:
             delete(phonebook);
+            break;
         default:
             break;
         }
@@ -128,3 +128,4 @@ void update_file(JRB book){
     }
     fclose(f);
 }
+
