@@ -4,14 +4,12 @@
 #define INITIAL_SIZE 20
 #define INCREMENTAL_SIZE 5
 //--------------------------------------------------------------------------------------
-typedef struct
-{
+typedef struct{
     void *key;
     void *value;
 } Entry;
 
-typedef struct
-{
+typedef struct{
   Entry *entries;
   int size, total;
   Entry (*makeNode)(void *, void *);
@@ -107,8 +105,7 @@ int main()
   int choice;
   char name[100];
   long num;
-  while (1)
-  {
+  while (1){
     printf("------MENU------\n");
     printf("1. Add entry to table \n");
     printf("2. Print table \n");
