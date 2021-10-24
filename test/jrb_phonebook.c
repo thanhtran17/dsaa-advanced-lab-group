@@ -3,19 +3,20 @@
 #include <string.h>
 #include "jrb.h"
 
+//-------------------------------------------------------------------
 void clear(void)
 {    
   while ( getchar() != '\n' );
 }
 
+//-------------------------------------------------------------------
 void jrb_print_db(JRB book);
 void delete(JRB book);
 void add_phone(JRB book, char *name, long phone);
 void delete_phone(JRB book, char *name);
 void modify_phone(JRB book, char *name);
 
-//--------------------------------------------
-
+//-------------------------------------------------------------------
 int main(){
     JRB phonebook = make_jrb();
     int choice;
@@ -62,8 +63,7 @@ int main(){
 
 }
 
-//---------------------
-
+//-------------------------------------------------------------------
 void jrb_print_db(JRB book){  //Print all the phonebook
     JRB a;
     jrb_traverse(a, book){
@@ -71,6 +71,7 @@ void jrb_print_db(JRB book){  //Print all the phonebook
     }
 }
 
+//-------------------------------------------------------------------
 void delete(JRB book){  
     JRB temp;
     jrb_traverse(temp, book){
@@ -79,18 +80,21 @@ void delete(JRB book){
     jrb_free_tree(book);
 }
 
+//-------------------------------------------------------------------
 void add_phone(JRB book, char *name, long phone){    
     JRB temp = jrb_find_str(book, name);
     if (temp != NULL) jrb_delete_node(temp);
     jrb_insert_str(book, name, new_jval_l(phone));
 }
 
+//-------------------------------------------------------------------
 void delete_phone(JRB book, char *name){
     JRB temp = jrb_find_str(book, name);
     if (temp != NULL) jrb_delete_node(temp);
     else printf("%s is not existed\n", name);
 }
 
+//-------------------------------------------------------------------
 void modify_phone(JRB book, char *name){
     JRB temp = jrb_find_str(book, name);
     if (temp == NULL) printf("%s is not existed!\n", name);
@@ -101,5 +105,6 @@ void modify_phone(JRB book, char *name){
         temp->val = new_jval_l(phone);
     }
 }
+//-------------------------------------------------------------------
 
  

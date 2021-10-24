@@ -17,7 +17,7 @@ JRB jrb_find_key(JRB tree, Jval value)
 //------------------------------------------------------------
 void delete_node(JRB tree, char* key)
 {
-  JRB temp = jrb_find_key(tree, (Jval) key);
+  JRB temp = jrb_find_str(tree, key);
 
   if (temp != NULL){
     jrb_delete_node(temp);
@@ -26,6 +26,7 @@ void delete_node(JRB tree, char* key)
     printf("Key invalid! \n");
   } 
 }
+
 //------------------------------------------------------------
 void jrb_print_db(JRB tree) 
 {
@@ -36,12 +37,25 @@ void jrb_print_db(JRB tree)
     printf("\n");
   }
 }
+
+//------------------------------------------------------------
+void modify_phone(JRB book, char *name){
+    JRB temp = jrb_find_str(book, name);
+    if (temp == NULL) printf("%s is not existed!\n", name);
+    else {
+        long phone;
+        printf("Input new phonenumber: ");
+        scanf("%ld", &phone);
+        temp->val = new_jval_l(phone);
+    }
+}
 //------------------------------------------------------------
 int main()
 {
   JRB phonebook, node;
   
   phonebook = make_jrb();
+
   jrb_insert_str(phonebook, "Thanh", new_jval_l(965));
   jrb_insert_str(phonebook, "Duc", new_jval_l(966));
   jrb_insert_str(phonebook, "Khue", new_jval_l(9617));
@@ -61,6 +75,10 @@ int main()
   printf("(96127) %s\n", jrb_find_key(phonebook, (Jval) 96127)->key);
   printf("\n");
   
+  printf("Modify: \n");
+  modify_phone(phonebook, "Duc");
+  printf("\n");
+
   printf("Delete a node: \n");
   delete_node(phonebook, "Thanh");
   jrb_print_db(phonebook);
