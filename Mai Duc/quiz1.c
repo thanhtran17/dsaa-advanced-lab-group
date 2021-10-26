@@ -112,7 +112,13 @@ void load_file(JRB book){
     }
     char *name;
     long phone;
-    while (fscanf(f, "%s - %ld", name, &phone) != EOF) add_phone(book, name, phone);
+    while(1){
+        fscanf(f, "%s", name);
+        fscanf(f, "-%ld\n", &phone);
+        add_phone(book, name, phone);
+
+        if (feof(f)) break;
+    }
     fclose(f);
 }
 
