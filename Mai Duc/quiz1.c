@@ -4,12 +4,13 @@
 #include "jrb.h"
 
 void clear()
-{    
-  while ( getchar() != '\n' );
+{
+    while (getchar() != '\n')
+        ;
 }
 
 void jrb_print_db(JRB book);
-void delete(JRB book);
+void delete (JRB book);
 void add_phone(JRB book, char *name, long phone);
 void delete_phone(JRB book, char *name);
 void modify_phone(JRB book, char *name);
@@ -18,19 +19,22 @@ void update_file(JRB book);
 
 //--------------------------------------------
 
-int main(){
+int main()
+{
     JRB phonebook = make_jrb();
     int choice;
-    char name[100]; long phone;
- 
-    do {
+    char name[100];
+    long phone;
+
+    do
+    {
         printf("HI\n");
         printf("1. Print the phonebook.\n");
         printf("2. Add new phonenumber\n");
         printf("3. Modify existed phonenumber.\n");
         printf("4. Delete phonenumber.\n");
-        printf("5. Delete all phonenumber. \n");
-        printf("6. Exit.\n");
+        printf("5. Read data from file. \n");
+        printf("6. Delete all phonenumber and exit.\n");
         printf("Your choice: ");
         scanf("%d", &choice);
         switch (choice)
@@ -46,7 +50,7 @@ int main(){
             scanf("%ld", &phone);
             add_phone(phonebook, strdup(name), phone);
             break;
-        case 3: 
+        case 3:
             printf("Input name: ");
             scanf("%s", name);
             modify_phone(phonebook, name);
@@ -57,8 +61,11 @@ int main(){
             delete_phone(phonebook, name);
             break;
         case 5:
-            delete(phonebook);
+            load_file(phonebook);
             break;
+        case 6:
+            delete (phonebook);
+            return 0;
         default:
             break;
         }
@@ -68,37 +75,49 @@ int main(){
 
 //---------------------
 
-void jrb_print_db(JRB book){  //Print all the phonebook
+void jrb_print_db(JRB book)
+{ //Print all the phonebook
     JRB a;
-    jrb_traverse(a, book){
+    jrb_traverse(a, book)
+    {
         printf("%s\t%ld\n", jval_s(a->key), jval_l(a->val));
     }
 }
 
-void delete(JRB book){  
+void delete (JRB book)
+{
     JRB temp;
-    jrb_traverse(temp, book){
+    jrb_traverse(temp, book)
+    {
         free(jval_s(temp->key));
     }
     jrb_free_tree(book);
 }
 
-void add_phone(JRB book, char *name, long phone){    
+void add_phone(JRB book, char *name, long phone)
+{
     JRB temp = jrb_find_str(book, name);
-    if (temp != NULL) jrb_delete_node(temp);
+    if (temp != NULL)
+        jrb_delete_node(temp);
     jrb_insert_str(book, name, new_jval_l(phone));
 }
 
-void delete_phone(JRB book, char *name){
+void delete_phone(JRB book, char *name)
+{
     JRB temp = jrb_find_str(book, name);
-    if (temp != NULL) jrb_delete_node(temp);
-    else printf("%s is not existed\n", name);
+    if (temp != NULL)
+        jrb_delete_node(temp);
+    else
+        printf("%s is not existed\n", name);
 }
 
-void modify_phone(JRB book, char *name){
+void modify_phone(JRB book, char *name)
+{
     JRB temp = jrb_find_str(book, name);
-    if (temp == NULL) printf("%s is not existed!\n", name);
-    else {
+    if (temp == NULL)
+        printf("%s is not existed!\n", name);
+    else
+    {
         long phone;
         printf("Input new phonenumber: ");
         scanf("%ld", &phone);
@@ -106,34 +125,39 @@ void modify_phone(JRB book, char *name){
     }
 }
 
-void load_file(JRB book){
+void load_file(JRB book)
+{
     FILE *f = fopen("phonebook.txt", "r");
-    if (f == NULL){
+    if (f == NULL)
+    {
         printf("Error!\n");
         return;
     }
-    char *name;
+    char name[50];
     long phone;
-    while(1){
-        fscanf(f, "%s", name);
-        fscanf(f, "-%ld\n", &phone);
-        jrb_insert_str(book, name, new_jval_l(phone));
-
-        if (feof(f)) break;
+    while (1)
+    {
+        fscanf(f, "%s %ld", name, &phone);
+        // printf("%s %ld\n", name, phone);
+        jrb_insert_str(book, strdup(name), new_jval_l(phone));
+        if (feof(f))
+            break;
     }
     fclose(f);
 }
 
-void update_file(JRB book){
+void update_file(JRB book)
+{
     FILE *f = fopen("phonebook.txt", "w");
-    if (f == NULL){
+    if (f == NULL)
+    {
         printf("Error!\n");
         return;
     }
     JRB temp = NULL;
-    jrb_traverse(temp, book){
+    jrb_traverse(temp, book)
+    {
         fprintf(f, "%s - %ld", jval_s(temp->key), jval_l(temp->val));
     }
     fclose(f);
 }
-
