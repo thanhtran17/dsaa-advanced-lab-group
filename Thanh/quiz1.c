@@ -14,6 +14,7 @@ JRB jrb_find_key(JRB tree, Jval value)
 
   return NULL;
 }
+
 //------------------------------------------------------------
 void delete_node(JRB tree, char* key)
 {
@@ -27,15 +28,14 @@ void delete_node(JRB tree, char* key)
   } 
 }
 
-//------------------------------------------------------------
-void jrb_print_db(JRB tree) 
+//-------------------------------------------------------------------
+void jrb_print_db(JRB book)
 {
-  JRB temp;
-  jrb_traverse(temp, tree) {
-    printf("  - Name: %s; ", jval_s(temp->key));
-    printf("Phone numbers: %ld", jval_l(temp->val));
-    printf("\n");
-  }
+    JRB temp;
+  
+    jrb_traverse(temp, book){
+        printf("%s\t%ld\n", jval_s(temp->key), jval_l(temp->val));
+    }
 }
 
 //------------------------------------------------------------
@@ -53,8 +53,53 @@ void modify_phone(JRB book, char *name){
 int main()
 {
   JRB phonebook, node;
-  
+  int choice;
+  char new_name[100], name_to_find[100], temp[100];
+  long new_num;
+
   phonebook = make_jrb();
+
+  while (1) {
+    printf("------MENU------\n");
+    printf("1. Add entry to table \n");
+    printf("2. Print table \n");
+    printf("3. Modify phone number \n");
+    printf("4. Find phone by name\n");
+    printf("5. Fine name by phone number\n");
+    printf("6. Delete\n");
+    printf("7. Exit\n");
+    printf("----------------\n");
+    printf("Enter your choice: ");
+    scanf("%d", &choice);
+    switch (choice)
+    {
+    case 1:
+      printf("Input name: ");
+      printf("%s\n", new_name);
+
+      scanf("%s", new_name);
+
+      printf("%s\n", new_name);
+      strcpy(temp, new_name);
+      printf("Input phone number: ");
+      scanf("%ld", &new_num);
+      jrb_insert_str(phonebook, temp, new_jval_l(new_num));
+      printf("%s\n", new_name);
+      break;
+    case 2:
+      jrb_print_db(phonebook);
+      break;
+    case 3:
+      printf("Enter name to modify number:");
+      scanf("%s", name_to_find);
+      modify_phone(phonebook, name_to_find);
+      break;
+    default:
+      return 1;
+      break;
+    }
+  }
+
 
   jrb_insert_str(phonebook, "Thanh", new_jval_l(965));
   jrb_insert_str(phonebook, "Duc", new_jval_l(966));
