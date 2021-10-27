@@ -22,7 +22,9 @@ int main(){
     JRB phonebook = make_jrb();
     int choice;
     char name[100]; long phone;
+ 
     do {
+        printf("HI\n");
         printf("1. Print the phonebook.\n");
         printf("2. Add new phonenumber\n");
         printf("3. Modify existed phonenumber.\n");
@@ -115,7 +117,7 @@ void load_file(JRB book){
     while(1){
         fscanf(f, "%s", name);
         fscanf(f, "-%ld\n", &phone);
-        add_phone(book, name, phone);
+        jrb_insert_str(book, name, new_jval_l(phone));
 
         if (feof(f)) break;
     }
