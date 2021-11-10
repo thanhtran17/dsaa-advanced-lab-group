@@ -1,0 +1,6 @@
+{
+  "files.associations": {
+    "jval.h": "c",
+    "string.h": "c"
+  }
+}
