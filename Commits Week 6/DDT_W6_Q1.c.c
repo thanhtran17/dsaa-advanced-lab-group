@@ -104,29 +104,4 @@ int main()
     }
   }
 }
-  // addEdge(g, 0, 1);
-  // addEdge(g, 0, 2);
-  // addEdge(g, 1, 2);
-  // addEdge(g, 1, 3);
 
-  // //Print graph  
-  // printf("Graph:\n\n");
-  // for (int i = 0; i < 10; i++){
-  //   for (int j = 0; j < 10; j++)  
-  //     printf("%5d", g.matrix[i * 10 + j]);
-  //   printf("\n");
-  // }
-
-  // // Adjacent vertices  
-  // n = getAdjacentVertices (g, 3, output);
-
-  // if (n == 0) {
-  //   printf("No adjacent vertices of the selected node\n");
-  // } 
-  // else {
-  //   printf("\nAdjacent vertices of the selected node:");
-  //   for (i=0; i<n; i++)   
-  //     printf("%2d", output[i]);
-  // }
-
-  // printf("\n\n");
