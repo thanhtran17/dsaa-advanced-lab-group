@@ -106,29 +106,29 @@ void BFS(Graph graph, int start, int stop, void (*func)(int)){
 }
 //----------------------------------------------------------
 void DFS(Graph graph, int start, int stop, void (*func)(int)){
-  int a[100]; // arraaay cac dinh da duyet qua
-    memset(a, 0, sizeof(int) * 100);
-    int output[100];
-    int n;   //number of adjacent vertices
-    int vertex;  // dinh dang xet
-    Dllist item;
-    Dllist queue = new_dllist();
-    dll_append(queue, new_jval_i(start));
-    while (!dll_empty(queue))
-    {
-        item = dll_first(queue);
-        vertex = jval_i(item->val);
-        dll_delete_node(item); 
-        if (a[vertex] == 0){
-            func(vertex);
-            a[vertex] = 1;
-            if (vertex == stop) return;
-            n = getAdjacentVertices(graph, vertex, output);
-            for (int i = 0; i < n; i++){
-                if (a[output[i]] != 1) dll_append(queue, new_jval_i(output[i]));
-            }
-        }
-    } 
+  int a[100]; //ham luu cac dinh da xet
+  memset(a, 0, sizeof(int)*100);
+  Dllist item;
+  Dllist stack = new_dllist();
+  int output[100];
+  int vertex;
+  int n;
+
+  dll_prepend(stack, new_jval_i(start));
+  while (!dll_empty(stack)){
+    item = dll_first(stack);
+    vertex = jval_i(item->val);
+    dll_delete_node(item);
+    if (a[vertex] == 0){
+      func(vertex);
+      a[vertex] = 1;
+      if (vertex == stop) return;
+      n = getAdjacentVertices(graph, vertex, output);
+      for (int i = 0; i < n; i++){
+        if (a[output[i]] == 0) dll_prepend(stack, new_jval_i(output[i])); 
+      }
+    }
+  }
 }
 //----------------------------------------------------------
 int main(){
@@ -140,8 +140,9 @@ int main(){
   printf("---Menu---\n");
   printf("1. Add edge\n");
   printf("2. Print BFS\n");
-  printf("3. Find adjacent vertices\n");
-  printf("4. Delete graph and exit\n");
+  printf("3. Print DFS\n");
+  printf("4. Find adjacent vertices\n");
+  printf("5. Delete graph and exit\n");
 
   while (1) {
     printf("Enter your choice: ");
@@ -164,7 +165,17 @@ int main(){
 				BFS(g, start, stop, printVertex);
 				printf("\n");
         break;
-      case 3:
+      case 3: 
+        printf("-->Input start vertex and stop vertex: \n");
+				scanf("%d %d", &start, &stop);
+				if (stop == -1)
+					printf("Print from all vertices from vertex till end %d\n", start);
+				else
+					printf("Print from all vertices from vertex %d to vertex %d\n", start, stop);
+				DFS(g, start, stop, printVertex);
+				printf("\n");
+        break;
+      case 4:
         printf("--> Enter vertice to find adjacent vertices: ");
         scanf("%d", &enteredAdjacent);
         n = getAdjacentVertices(g, enteredAdjacent, output);
@@ -179,7 +190,7 @@ int main(){
           printf("\n");
         }
         break;
-      case 4: 
+      case 5: 
         deleteGraph(g);
         printf("--> Graph deleted");
         return 0;
