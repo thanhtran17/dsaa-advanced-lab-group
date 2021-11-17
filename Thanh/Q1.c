@@ -1,54 +1,80 @@
-#include<stdio.h>
-#include<stdlib.h>
-//---------------------------------------------------
-typedef struct {
-  int* matrix;
-  int size;
-} Graph;
-//---------------------------------------------------
-Graph createGraph(int size)  
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+#include "jval.h"
+#include "jrb.h"
+//------------------------------------------------------
+typedef JRB Graph;
+//------------------------------------------------------
+Graph createGraph()
 {
-  Graph root;
-  root.matrix = (int*) calloc (size * size, sizeof(int));
-  root.size = size;
-  
-  return root;
+  return make_jrb();
 }
-//---------------------------------------------------
-void addEdge (Graph graph, int v1, int v2)
+//------------------------------------------------------
+void addEdge(Graph g, int v1, int v2)
 {
-  int n = graph.size;
-  graph.matrix[v1 * n + v2] = 1;
-  graph.matrix[v2 * n + v1] = 1;
-}
-//---------------------------------------------------
-int adjacent(Graph graph, int v1, int v2)
-{
-  int n = graph.size;
-  if (graph.matrix[n * v1 + v2] == 1)
-    return 1;
-  else 
-    return 0;
-}
-//---------------------------------------------------
-int getAdjacentVertices(Graph graph, int vertex, int *output)
-{
-  int j = 0;
-  for (int i = 0; i < graph.size; i++) {
-    if (adjacent(graph, vertex, i)) {
-      output[j] = i;
-      j++;
-    }
+  JRB node1 = jrb_find_int(g, v1);
+  JRB node2 = jrb_find_int(g, v2);
+
+  if (node1 == NULL){
+    JRB tree1 = make_jrb();
+    jrb_insert_int(g, v1, new_jval_v(tree1));
+    jrb_insert_int(tree1, v2, new_jval_i(1));
+  }
+  else {
+    JRB tree1 = (JRB)jval_v(node1->val);
+    jrb_insert_int(tree1, v2, new_jval_i(1));
   }
 
-  return j;
+  if (node2 == NULL){
+    JRB tree2 = make_jrb();
+    jrb_insert_int(g, v2, new_jval_v(tree2));
+    jrb_insert_int(tree2, v1, new_jval_i(1));
+  }
+  else {
+    JRB tree2 = (JRB)jval_v(node2->val);
+    jrb_insert_int(tree2, v1, new_jval_i(1));
+  }
 }
-//---------------------------------------------------
-void deleteGraph(Graph graph)
+//------------------------------------------------------
+void printGraph(Graph g)
 {
-  free(graph.matrix);
+  JRB col, row;
+  jrb_traverse(col, g){
+    printf("%d:   ", col->key);
+    row = (JRB)jval_v(col->val);
+    if (row){
+      JRB rowHead;
+      jrb_traverse(rowHead, row){
+        printf("%d   ", rowHead->key);
+      }
+    }
+    printf("\n\n");
+  }
 }
-//---------------------------------------------------
+//------------------------------------------------------
+int getAdjacentVertices(Graph g, int vertex, int *output)
+{
+  JRB node = jrb_find_int(g, vertex);
+  JRB tree = (JRB)jval_v(node->val);
+  
+  int count = 0;
+  jrb_traverse(node, tree){
+    output[count++] = jval_i(node->key);
+  }
+
+  return count;
+}
+//------------------------------------------------------
+void deleteGraph(Graph g)
+{
+  JRB node;
+  jrb_traverse(node, g){
+    jrb_free_tree(jval_v(node->val));
+  }
+}
+//------------------------------------------------------
 int main()
 {
   int i, n, output[10], choice;
@@ -74,18 +100,12 @@ int main()
         printf("\n");
         break;
       case 2: 
-        printf("--> Graph:\n\n");
-        for (int i = 0; i < 10; i++){
-          for (int j = 0; j < 10; j++)  
-            printf("%5d", g.matrix[i * 10 + j]);
-          printf("\n");
-        }
-        printf("\n");
+        printGraph(g);
         break;
       case 3:
         printf("--> Enter vertice to find adjacent vertices: ");
         scanf("%d", &enteredAdjacent);
-        n = getAdjacentVertices (g, enteredAdjacent, output);
+        n = getAdjacentVertices(g, enteredAdjacent, output);
 
         if (n == 0) {
           printf("No adjacent vertices of the selected node\n");
@@ -104,4 +124,3 @@ int main()
     }
   }
 }
-
