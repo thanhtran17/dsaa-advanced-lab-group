@@ -37,6 +37,7 @@ Fax: 865-974-4404
 #include <stdio.h>
 #include <stdlib.h>
 #include "jval.h"
+#include <string.h>
 
 Jval JNULL;
 

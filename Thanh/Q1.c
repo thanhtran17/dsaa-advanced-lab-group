@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include "jval.h"
 #include "jrb.h"
+#include "dllist.h"
 //------------------------------------------------------
 typedef JRB Graph;
 //------------------------------------------------------
@@ -75,10 +76,44 @@ void deleteGraph(Graph g)
   }
 }
 //------------------------------------------------------
+void printVertex(int v) 
+{
+  printf("%4d", v); 
+}
+//------------------------------------------------------
+void BFS(Graph g, int start, int stop, void (*func)(int))
+{
+  int visited[100], vertex, output[100], n;
+  memset(visited, 0, sizeof(int) * 100);
+
+  Dllist node;
+  Dllist queue = new_dllist();
+
+  dll_append(queue, new_jval_i(start));
+
+  while (!dll_empty(queue)){
+    node = dll_first(queue);
+    vertex = jval_i(node->val);
+    dll_delete_node(node);
+    if (visited[vertex] == 0){
+      func(vertex);
+      visited[vertex] = 1;
+      if (vertex == stop)
+        return;
+      n  = getAdjacentVertices(g, vertex, output);
+      for (int i = 0; i < n; i++) {
+        if (visited[output[i]] != 1)
+          dll_append(queue, new_jval_i(output[i]));
+      }
+    }
+  }
+}
+//------------------------------------------------------
 int main()
 {
   int i, n, output[10], choice;
   int xi, yi, enteredAdjacent; 
+  int start, stop;
 
   Graph g = createGraph(10);
 
@@ -87,6 +122,8 @@ int main()
   printf("2. Print graph\n");
   printf("3. Find adjacent vertices\n");
   printf("4. Delete graph and exit\n");
+  printf("5. BFS traversal\n");
+  printf("6. DFS traversal\n");
 
   while (1) {
     printf("Enter your choice: ");
@@ -103,7 +140,7 @@ int main()
         printGraph(g);
         break;
       case 3:
-        printf("--> Enter vertice to find adjacent vertices: ");
+        printf("--> Enter vertex to find adjacent vertices: ");
         scanf("%d", &enteredAdjacent);
         n = getAdjacentVertices(g, enteredAdjacent, output);
 
@@ -121,6 +158,18 @@ int main()
         deleteGraph(g);
         printf("--> Graph deleted");
         return 0;
+      case 5:
+        printf("--> Enter first and last vertex to visit: ");
+        scanf("%d %d", &start, &stop);        
+        (stop == -1) ? 
+          printf("Traversal from %d till the end.\n", start) :
+          printf("Traversal from %d till %d\n", start, stop);
+        BFS(g, start, stop, printVertex);
+        printf("\n");
+        break;
+      case 6:
+        printf("\nDFS\n");
+        break;
     }
   }
 }

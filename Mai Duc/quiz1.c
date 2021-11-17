@@ -5,7 +5,6 @@
 #include "jval.h"
 #include "jrb.h"
 #include "dllist.h"
-
 //------------------------------------------------------
 typedef JRB Graph;
 //------------------------------------------------------
@@ -77,29 +76,34 @@ void deleteGraph(Graph g)
   }
 }
 //------------------------------------------------------
-void printVertex(int v) { printf("%4d", v); }
+void printVertex(int v) 
+{
+  printf("%4d", v); 
+}
 //------------------------------------------------------
-void BFS(Graph graph, int start, int stop, void (*func)(int)){
-    int a[100]; // arraaay cac dinh da duyet qua
+void BFS(Graph graph, int start, int stop, void (*func)(int))
+{
+    int a[100], vertex, output[100], n;
     memset(a, 0, sizeof(int) * 100);
-    int output[100];
-    int n;   //number of adjacent vertices
-    int vertex;  // dinh dang xet
+
     Dllist item;
     Dllist queue = new_dllist();
+
     dll_append(queue, new_jval_i(start));
-    while (!dll_empty(queue))
-    {
+
+    while (!dll_empty(queue)){
         item = dll_first(queue);
         vertex = jval_i(item->val);
         dll_delete_node(item); 
         if (a[vertex] == 0){
             func(vertex);
             a[vertex] = 1;
-            if (vertex == stop) return;
+            if (vertex == stop) 
+              return;
             n = getAdjacentVertices(graph, vertex, output);
             for (int i = 0; i < n; i++){
-                if (a[output[i]] != 1) dll_append(queue, new_jval_i(output[i]));
+                if (a[output[i]] != 1) 
+                    dll_append(queue, new_jval_i(output[i]));
             }
         }
     } 

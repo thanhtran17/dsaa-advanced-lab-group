@@ -1,3 +1,4 @@
-# week 7
+# Week 7
 
-BFS DFS
+- BFS, DFS
+- **dllist** library
