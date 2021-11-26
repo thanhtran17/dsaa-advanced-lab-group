@@ -9,7 +9,7 @@ int insertPhoneData(BTA *head_node, char *name, char *phone, int *dsize)
   {
     return btupd(head_node, name, phone, *dsize);
   }
-  return btins(head_node, name, phone, *dsize);
+  return btins(head_node, name, strdup(phone), *dsize);
 }
 void findPhone(BTA *head_node, char *name, char *phone, int dsize, int *rsize)
 {
@@ -82,7 +82,7 @@ int main()
       printf("Input name and your phone number \n");
       scanf("%s", name);
       scanf("%s", phone);
-      check_success = insertPhoneData(book, strdup(name), strdup(phone), &dsize);
+      check_success = insertPhoneData(book, strdup(name), phone, &dsize);
       if (check_success != 0)
       {
         printf("Insert name and phone failed. Please try again!\n");
