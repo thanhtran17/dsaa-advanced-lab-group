@@ -21,6 +21,10 @@ window {
   border-radius: 10px;
 }
 
+#defaultButton {
+  border: none;
+  border-radius: 10px;
+}
 
 #searchButton:hover {
   background: rgb(255, 77, 28);
@@ -28,4 +32,8 @@ window {
 
 #addButton:hover {
   background: rgb(55, 179, 55);
+}
+
+#defaultButton:hover {
+  background: lightgray;
 }
