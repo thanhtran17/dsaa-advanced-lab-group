@@ -1,0 +1,51 @@
+window {
+  background: linear-gradient(120deg, #f6d365, #fda085);
+  ;
+  color: white;
+  border-width: 3px;
+  font-weight: 900;
+  border-color: blue;
+}
+
+#addButton {
+  background: rgb(73, 204, 73);
+  color: white;
+  border: none;
+  border-radius: 10px;
+}
+
+#searchButton {
+  background: #ff6f47;
+  color: white;
+  border: none;
+  border-radius: 10px;
+}
+
+#defaultButton {
+  border: none;
+  border-radius: 10px;
+}
+
+
+#removeButton {
+  background: rgb(230, 255, 110);
+  color: black;
+  border: none;
+  border-radius: 10px;
+}
+
+#removeButton:hover {
+  background: rgb(243, 225, 107);
+}
+
+#searchButton:hover {
+  background: rgb(255, 77, 28);
+}
+
+#addButton:hover {
+  background: rgb(55, 179, 55);
+}
+
+#defaultButton:hover {
+  background: lightgray;
+}
