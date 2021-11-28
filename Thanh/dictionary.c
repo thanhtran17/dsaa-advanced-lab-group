@@ -4,34 +4,36 @@
 #include <stdlib.h>
 #include "btree/inc/btree.h"
 #include "soundex.h"
-//------------------------------------------------
 typedef struct _dictionaryFunctions
 {
+    //*** BUTTONS
     GtkWidget *add_word_btn;
     GtkWidget *search_word_btn;
     GtkWidget *set_default_btn;
     GtkWidget *remove_word_btn;
-    
+    //*** LABElS
     GtkWidget *word_label;
     GtkWidget *mean_label;
-    
+    //*** INPUTS
     GtkWidget *word_entry;
     GtkWidget *mean_entry;
 } Dict;
 Dict dict;
-//------------------------------------------------
+
+// **    GLOBAL VARIABLES    **//
 char word[256];
 char mean[256];
 char soundex_word[256];
 int soundex_index = 0;
-//
+/*       BTREE         */
 char pb[] = "language.db";
 int choice;
 int rsize;       // current length of data
 int dsize = 256; // length of data
 int check_success = -1;
 int dups;
-//------------------------------------------------
+
+//**       GTK FUNCTION      **//
 void btn_clicked(GtkWidget *widget, GtkEntry *entry);
 void myCSS(void);
 void createWind(GtkWidget **window, gint width, gint height);
@@ -43,7 +45,8 @@ void add_word_handler(void);
 void search_word_handler(void);
 void remove_word_handler(void);
 gboolean input_word_handler(GtkWidget *widget, GdkEventKey *event);
-//------------------------------------------------
+
+//**        BTREE FUNCTIONS      **//
 int insertWord(BTA *head_node, char word[], char mean[], int dsize);
 void findWord(BTA *head_node, int dsize, int *rsize);
 void deleteWord(BTA *head_node, char word[]);
@@ -51,21 +54,28 @@ void printList(BTA *head_node, int pos, char word[], char mean[], int dsize, int
 BTA *createBtree(BTA *root, char *pb);
 void readFile(BTA *head_node);
 void suggestionWord(BTA *book, char new_word[]);
-//------------------------------------------------
+
+// Initialize btree
 btinit();
 BTA *book;
-//------------------------------------------------
+
+//**       HANDLE MAIN        **//
 int main(int argc, char *argv[])
 {
     book = createBtree(book, pb);
     btdups(book, dups);
     readFile(book);
-
+    //printList(book, 1, word, mean, dsize, &rsize);
+    /*                     */
     GtkWidget *window, *grid;
     gtk_init(&argc, &argv);
 
     myCSS();
+
+    /*     Create the Window     */
     createWind(&window, 390, 290);
+
+    /*     Create a Grid     */
     createGrid(&grid, &window, "myGrid");
 
     /*     Create labels and inputs     */
@@ -120,7 +130,7 @@ int main(int argc, char *argv[])
     btcls(book);
     return 0;
 }
-//------------------------------------------------
+
 void myCSS(void)
 {
     GtkCssProvider *provider;
@@ -138,7 +148,7 @@ void myCSS(void)
     gtk_css_provider_load_from_file(provider, g_file_new_for_path(myCssFile), &error);
     g_object_unref(provider);
 }
-//------------------------------------------------
+
 void createWind(GtkWidget **window, gint width, gint height)
 {
     *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -148,7 +158,7 @@ void createWind(GtkWidget **window, gint width, gint height)
     gtk_container_set_border_width(GTK_CONTAINER(*window), 5);
     g_signal_connect(*window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
 }
-//------------------------------------------------
+
 void createGrid(GtkWidget **grid, GtkWidget **window, const gchar *name)
 {
     *grid = gtk_grid_new();
@@ -161,7 +171,6 @@ void createGrid(GtkWidget **grid, GtkWidget **window, const gchar *name)
     g_object_set(*grid, "margin", 22, NULL);
     gtk_container_add(GTK_CONTAINER(*window), *grid);
 }
-//------------------------------------------------
 gboolean zero_to_nine_keys_callback(GtkWidget *widget, GdkEventKey *event)
 {
     (void)widget;
@@ -182,7 +191,6 @@ gboolean zero_to_nine_keys_callback(GtkWidget *widget, GdkEventKey *event)
 
     return TRUE;
 }
-//------------------------------------------------
 gboolean input_word_handler(GtkWidget *widget, GdkEventKey *event)
 {
     (void)widget;
@@ -223,7 +231,6 @@ gboolean input_word_handler(GtkWidget *widget, GdkEventKey *event)
     }
     return TRUE;
 }
-//------------------------------------------------
 gboolean a_to_z_keys_callback(GtkWidget *widget, GdkEventKey *event)
 {
     (void)widget;
@@ -255,14 +262,12 @@ gboolean a_to_z_keys_callback(GtkWidget *widget, GdkEventKey *event)
 
     return TRUE;
 }
-//------------------------------------------------
 void set_fields_default(GtkEntry *widget)
 {
     (void)widget;
     gtk_entry_set_text((GtkEntry *)dict.word_entry, "");
     gtk_entry_set_text((GtkEntry *)dict.mean_entry, "");
 }
-//------------------------------------------------
 void add_word_handler(void)
 {
     strcpy(word, gtk_entry_get_text((GtkEntry *)dict.word_entry));
@@ -279,7 +284,6 @@ void add_word_handler(void)
         g_print("Please input word and mean for adding\n");
     }
 }
-//------------------------------------------------
 void search_word_handler(void)
 {
     strcpy(word, gtk_entry_get_text((GtkEntry *)dict.word_entry));
@@ -292,7 +296,6 @@ void search_word_handler(void)
         g_print("Please input word for searching\n");
     }
 }
-//------------------------------------------------
 void remove_word_handler(void)
 {
     strcpy(word, gtk_entry_get_text((GtkEntry *)dict.word_entry));
@@ -303,7 +306,6 @@ void remove_word_handler(void)
         gtk_entry_set_text((GtkEntry *)dict.mean_entry, "");
     }
 }
-//------------------------------------------------
 int insertWord(BTA *head_node, char word[], char mean[], int dsize)
 {
     int rsize = btupd(head_node, word, mean, dsize);
@@ -313,7 +315,6 @@ int insertWord(BTA *head_node, char word[], char mean[], int dsize)
     }
     return btins(head_node, word, mean, dsize);
 }
-//------------------------------------------------
 void findWord(BTA *head_node, int dsize, int *rsize)
 {
     if (btsel(head_node, word, mean, dsize, rsize) == 0)
@@ -326,7 +327,6 @@ void findWord(BTA *head_node, int dsize, int *rsize)
         printf("There is no word like that in dictionary. Please try again!\n");
     };
 }
-//------------------------------------------------
 void deleteWord(BTA *head_node, char word[])
 {
     if (btdel(head_node, word) == 0)
@@ -338,7 +338,6 @@ void deleteWord(BTA *head_node, char word[])
         printf("There is no word like that in dictionary. Please try again!\n");
     }
 }
-//------------------------------------------------
 void printList(BTA *head_node, int pos, char word[], char mean[], int dsize, int *rsize)
 {
     if (btpos(head_node, pos) != 0)
@@ -350,7 +349,6 @@ void printList(BTA *head_node, int pos, char word[], char mean[], int dsize, int
         printf("Word: %s Mean: %s\n", word, mean);
     }
 }
-//------------------------------------------------
 BTA *createBtree(BTA *root, char *pb)
 {
     root = btopn(pb, 0, 0);
@@ -360,7 +358,6 @@ BTA *createBtree(BTA *root, char *pb)
     }
     return root;
 }
-//------------------------------------------------
 void readFile(BTA *head_node)
 {
     FILE *fp;
@@ -381,7 +378,6 @@ void readFile(BTA *head_node)
     }
     fclose(fp);
 }
-//------------------------------------------------
 void suggestionWord(BTA *book, char new_word[])
 {
     strcpy(soundex_word, "");
@@ -413,7 +409,6 @@ void suggestionWord(BTA *book, char new_word[])
         }
     }
 }
-//------------------------------------------------
 void btn_clicked(GtkWidget *widget, GtkEntry *entry)
 {
     (void)widget;
@@ -423,4 +418,3 @@ void btn_clicked(GtkWidget *widget, GtkEntry *entry)
     g_print("%s\n", gstrTexto);
     gtk_editable_select_region(GTK_EDITABLE(entry), 0, 3);
 }
-//------------------------------------------------
