@@ -26,6 +26,18 @@ window {
   border-radius: 10px;
 }
 
+
+#removeButton {
+  background: rgb(230, 255, 110);
+  color: black;
+  border: none;
+  border-radius: 10px;
+}
+
+#removeButton:hover {
+  background: rgb(243, 225, 107);
+}
+
 #searchButton:hover {
   background: rgb(255, 77, 28);
 }
