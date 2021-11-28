@@ -1,0 +1,7 @@
+{
+  "files.associations": {
+    "stdlib.h": "c",
+    "soundex.h": "c",
+    "btree.h": "c"
+  }
+}
