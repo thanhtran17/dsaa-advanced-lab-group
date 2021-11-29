@@ -412,7 +412,6 @@ void suggestionWord(BTA *book, char new_word[])
             {
                 printf("%s\n", word);
             }
-            //strcpy(soundex_word[soundex_index], word);
             soundex_index++;
         }
     }
