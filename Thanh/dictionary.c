@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include "btree/inc/btree.h"
 #include "soundex.h"
+//-------------------------------------------------------
 typedef struct _dictionaryFunctions
 {
     //*** BUTTONS
@@ -19,21 +20,19 @@ typedef struct _dictionaryFunctions
     GtkWidget *mean_entry;
 } Dict;
 Dict dict;
-
-// **    GLOBAL VARIABLES    **//
+//-------------------------------------------------------
 char word[256];
 char mean[256];
 char soundex_word[256];
 int soundex_index = 0;
-/*       BTREE         */
+//-------------------------------------------------------
 char pb[] = "language.db";
 int choice;
 int rsize;       // current length of data
 int dsize = 256; // length of data
 int check_success = -1;
 int dups;
-
-//**       GTK FUNCTION      **//
+//-------------------------------------------------------
 void btn_clicked(GtkWidget *widget, GtkEntry *entry);
 void myCSS(void);
 void createWind(GtkWidget **window, gint width, gint height);
@@ -45,8 +44,7 @@ void add_word_handler(void);
 void search_word_handler(void);
 void remove_word_handler(void);
 gboolean input_word_handler(GtkWidget *widget, GdkEventKey *event);
-
-//**        BTREE FUNCTIONS      **//
+//-------------------------------------------------------
 int insertWord(BTA *head_node, char word[], char mean[], int dsize);
 void findWord(BTA *head_node, int dsize, int *rsize);
 void deleteWord(BTA *head_node, char word[]);
@@ -54,28 +52,20 @@ void printList(BTA *head_node, int pos, char word[], char mean[], int dsize, int
 BTA *createBtree(BTA *root, char *pb);
 void readFile(BTA *head_node);
 void suggestionWord(BTA *book, char new_word[]);
-
-// Initialize btree
+//-------------------------------------------------------
 btinit();
 BTA *book;
-
-//**       HANDLE MAIN        **//
+//-------------------------------------------------------
 int main(int argc, char *argv[])
 {
     book = createBtree(book, pb);
     btdups(book, dups);
     readFile(book);
-    //printList(book, 1, word, mean, dsize, &rsize);
-    /*                     */
+
     GtkWidget *window, *grid;
     gtk_init(&argc, &argv);
-
     myCSS();
-
-    /*     Create the Window     */
-    createWind(&window, 390, 290);
-
-    /*     Create a Grid     */
+    createWind(&window, 390, 250);
     createGrid(&grid, &window, "myGrid");
 
     /*     Create labels and inputs     */
@@ -83,39 +73,35 @@ int main(int argc, char *argv[])
     dict.mean_entry = (GtkWidget *)gtk_entry_new();
     dict.word_label = gtk_label_new("Word: ");
     gtk_widget_set_margin_start(dict.word_label, 10);
-    dict.mean_label = gtk_label_new("Mean: ");
+    dict.mean_label = gtk_label_new("Meaning: ");
     gtk_widget_set_margin_start(dict.mean_label, 10);
 
     /*     Create functional buttons     */
-    dict.add_word_btn = gtk_button_new_with_label("Add Word");
+    dict.add_word_btn = gtk_button_new_with_label("Add");
     gtk_widget_set_name(dict.add_word_btn, "addButton");
-    gtk_widget_set_size_request(dict.add_word_btn, 390, 40);
     g_object_set(dict.add_word_btn, "margin", 2, NULL);
 
-    dict.search_word_btn = gtk_button_new_with_label("Search Word");
+    dict.search_word_btn = gtk_button_new_with_label("Search");
     gtk_widget_set_name(dict.search_word_btn, "searchButton");
-    gtk_widget_set_size_request(dict.search_word_btn, 390, 40);
     g_object_set(dict.search_word_btn, "margin", 2, NULL);
 
     dict.set_default_btn = gtk_button_new_with_label("Set Default");
     gtk_widget_set_name(dict.set_default_btn, "defaultButton");
-    gtk_widget_set_size_request(dict.set_default_btn, 390, 40);
     g_object_set(dict.set_default_btn, "margin", 2, NULL);
 
-    dict.remove_word_btn = gtk_button_new_with_label("Remove Word");
+    dict.remove_word_btn = gtk_button_new_with_label("Remove");
     gtk_widget_set_name(dict.remove_word_btn, "removeButton");
-    gtk_widget_set_size_request(dict.remove_word_btn, 390, 40);
     g_object_set(dict.remove_word_btn, "margin", 2, NULL);
 
     /*     Putting all together      */
-    gtk_grid_attach(GTK_GRID(grid), dict.word_label, 0, 0, 1, 1);
-    gtk_grid_attach(GTK_GRID(grid), dict.word_entry, 1, 0, 1, 1);
-    gtk_grid_attach(GTK_GRID(grid), dict.mean_label, 0, 1, 1, 1);
-    gtk_grid_attach(GTK_GRID(grid), dict.mean_entry, 1, 1, 1, 1);
-    gtk_grid_attach(GTK_GRID(grid), dict.add_word_btn, 1, 2, 1, 1);
-    gtk_grid_attach(GTK_GRID(grid), dict.search_word_btn, 1, 3, 1, 1);
-    gtk_grid_attach(GTK_GRID(grid), dict.remove_word_btn, 1, 4, 1, 1);
-    gtk_grid_attach(GTK_GRID(grid), dict.set_default_btn, 1, 5, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), dict.word_label,      0, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), dict.mean_label,      0, 1, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), dict.word_entry,      1, 0, 2, 1);
+    gtk_grid_attach(GTK_GRID(grid), dict.mean_entry,      1, 1, 2, 1);
+    gtk_grid_attach(GTK_GRID(grid), dict.search_word_btn, 2, 2, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), dict.set_default_btn, 1, 2, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), dict.add_word_btn,    1, 3, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), dict.remove_word_btn, 2, 3, 1, 1);
 
     /*        Event Handler         */
     g_signal_connect_swapped(dict.word_entry, "key_press_event", G_CALLBACK(input_word_handler), dict.word_entry);
