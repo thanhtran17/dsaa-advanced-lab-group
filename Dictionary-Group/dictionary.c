@@ -56,7 +56,7 @@ BTA *createBtree(BTA *root, char *pb);
 void readFile(BTA *head_node);
 void suggestionWord(BTA *book, char new_word[]);
 
-// Initialize btree
+/*     Initialize Btree    */
 btinit();
 BTA *book;
 
@@ -67,7 +67,9 @@ int main(int argc, char *argv[])
     btdups(book, dups);
     readFile(book);
     //printList(book, 1, word, mean, dsize, &rsize);
-    /*                     */
+    /*     Initialize Soundex     */
+    init();
+    /*       Initialize GTK       */
     GtkWidget *window, *grid;
     gtk_init(&argc, &argv);
 
