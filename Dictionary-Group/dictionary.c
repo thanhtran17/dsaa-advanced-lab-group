@@ -1,3 +1,4 @@
+
 #include <gtk/gtk.h>
 #include <string.h>
 #include <stdio.h>
@@ -77,7 +78,7 @@ int main(int argc, char *argv[])
 
     /*     Create a Grid     */
     createGrid(&grid, &window, "myGrid");
-
+    gtk_widget_set_events(dict.word_entry, GDK_KEY_PRESS_MASK);
     /*     Create labels and inputs     */
     dict.word_entry = (GtkWidget *)gtk_entry_new();
     dict.mean_entry = (GtkWidget *)gtk_entry_new();
@@ -210,13 +211,13 @@ gboolean input_word_handler(GtkWidget *widget, GdkEventKey *event)
             GDK_KEY_N, GDK_KEY_M, GDK_KEY_Tab
 
         };
-
     for (guint i = 0; i < 55; i++)
     {
         if (event->keyval == keys[i] && i != 54)
         {
-            strcpy(word, gtk_entry_get_text((GtkEntry *)dict.word_entry));
-            printf("%s\n", word);
+            strcpy(word, gtk_entry_get_text(GTK_ENTRY(dict.word_entry)));
+            strcat(word, (char[2]){(char)keys[i], '\0'});
+            g_print("Current Input: %s\n", word);
             if (strlen(word) > 0)
             {
                 suggestionWord(book, word);
@@ -226,6 +227,10 @@ gboolean input_word_handler(GtkWidget *widget, GdkEventKey *event)
         else if (event->keyval == keys[54] && strlen(soundex_word) > 0)
         {
             gtk_entry_set_text((GtkEntry *)dict.word_entry, soundex_word);
+            return FALSE;
+        }
+        else if (event->keyval == GDK_KEY_Tab)
+        {
             return FALSE;
         }
     }
@@ -382,7 +387,6 @@ void suggestionWord(BTA *book, char new_word[])
 {
     strcpy(soundex_word, "");
     soundex_index = 0;
-    printf("Sound %s\n", soundex_word);
     char n[10];
     char m[10];
     strcpy(n, soundex(strdup(new_word)));
@@ -413,7 +417,6 @@ void btn_clicked(GtkWidget *widget, GtkEntry *entry)
 {
     (void)widget;
     const gchar *gstrTexto;
-
     gstrTexto = gtk_entry_get_text(entry);
     g_print("%s\n", gstrTexto);
     gtk_editable_select_region(GTK_EDITABLE(entry), 0, 3);
