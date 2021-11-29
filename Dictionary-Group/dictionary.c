@@ -220,7 +220,7 @@ gboolean input_word_handler(GtkWidget *widget, GdkEventKey *event)
             g_print("Current Input: %s\n", word);
             if (strlen(word) > 0)
             {
-                suggestionWord(book, word);
+                suggestionWord(book, strdup(word));
             }
             return FALSE;
         }
@@ -389,7 +389,7 @@ void suggestionWord(BTA *book, char new_word[])
     soundex_index = 0;
     char n[10];
     char m[10];
-    strcpy(n, soundex(strdup(new_word)));
+    strcpy(n, soundex(new_word));
     if (btpos(book, 1) != 0)
     {
         printf("Some errors happened!\n");
@@ -397,8 +397,10 @@ void suggestionWord(BTA *book, char new_word[])
     printf("\nHint: \n");
     while (btseln(book, word, mean, dsize, &rsize) == 0)
     {
+        //printf("Compare: %s %s\n", word, new_word);
+        //printf(" %s\n", new_word);
         strcpy(m, soundex(strdup(word)));
-        if (strcmp(m, n) == 0)
+        if (strcmp(n, m) == 0)
         {
             if (soundex_index == 0)
             {
