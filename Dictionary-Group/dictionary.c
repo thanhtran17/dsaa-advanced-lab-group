@@ -47,7 +47,6 @@ void btn_clicked(GtkWidget *widget, GtkEntry *entry);
 void myCSS(void);
 void createWind(GtkWidget **window, gint width, gint height);
 void createGrid(GtkWidget **grid, GtkWidget **window, const gchar *name);
-gboolean a_to_z_keys_callback ( GtkWidget *widget, GdkEventKey *event );
 void set_fields_default(GtkEntry * widget);
 void add_word_handler(void);
 void search_word_handler(void);
@@ -221,37 +220,6 @@ gboolean input_word_handler( GtkWidget *widget, GdkEventKey *event ) {
           return FALSE;
         }
     }
-    return TRUE;
-}
-//------------------------------------------------------------------------
-gboolean a_to_z_keys_callback ( GtkWidget *widget, GdkEventKey *event ) {
-    (void) widget;
-    guint keys[54] =
-    {
-        GDK_KEY_a, GDK_KEY_b, GDK_KEY_c, GDK_KEY_d, GDK_KEY_e,
-        GDK_KEY_f, GDK_KEY_g, GDK_KEY_h, GDK_KEY_i, GDK_KEY_k,
-        GDK_KEY_t,GDK_KEY_y,GDK_KEY_u,GDK_KEY_o,GDK_KEY_p,
-        GDK_KEY_q,GDK_KEY_w,GDK_KEY_e,GDK_KEY_r,GDK_KEY_s,
-        GDK_KEY_j,GDK_KEY_l,GDK_KEY_z,GDK_KEY_x,GDK_KEY_v,
-        GDK_KEY_n,GDK_KEY_m,
-        GDK_KEY_A, GDK_KEY_B, GDK_KEY_C, GDK_KEY_D, GDK_KEY_E,
-        GDK_KEY_F, GDK_KEY_G, GDK_KEY_H, GDK_KEY_I, GDK_KEY_K,
-        GDK_KEY_T,GDK_KEY_Y,GDK_KEY_U,GDK_KEY_O,GDK_KEY_P,
-        GDK_KEY_Q,GDK_KEY_W,GDK_KEY_E,GDK_KEY_R,GDK_KEY_S,
-        GDK_KEY_J,GDK_KEY_L,GDK_KEY_Z,GDK_KEY_X,GDK_KEY_V,
-        GDK_KEY_N,GDK_KEY_M
-        
-    };
-
-    for ( guint i = 0 ; i < 54 ; i++ )
-    {
-        if ( event->keyval == keys[i] )
-        {
-          g_print("Key %c pressed\n", keys[i]);
-          return FALSE;
-        }
-    }
-
     return TRUE;
 }
 //------------------------------------------------------------------------
