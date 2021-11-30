@@ -26,6 +26,23 @@ int DAG(Graph graph);
 //------------------------------------------------------
 int main()
 {
+  int output[10]; 
+  Graph g = createGraph();
+  addVertex(g, 0, "V0");
+  addVertex(g, 1, "V1");
+  addVertex(g, 2, "V2");
+  addVertex(g, 3, "V3");
+  addEdge(g, 1, 0);
+  addEdge(g, 1, 2);
+  addEdge(g, 2, 0);
+  addEdge(g, 1, 3);
+  int in = indegree(g, 0, output);
+  printf("%d\n", in);
+  for (int i=0; i < in; i++){
+    printf("%3d", output[i]);
+  }
+  printf("\n");
+  dropGraph(g);
   return 0;
 }
 //------------------------------------------------------
@@ -68,3 +85,44 @@ char *getVertex(Graph graph, int id)
   }
 }
 //------------------------------------------------------
+void addEdge(Graph graph, int v1, int v2){
+  JRB node = jrb_find_int(graph.edges, v1);
+  if (node == NULL){
+    JRB tree = make_jrb();
+    jrb_insert_int(graph.edges, v1, new_jval_v(tree));
+    jrb_insert_int(tree, v2, new_jval_i(1));
+  }
+  else {
+    JRB tree = (JRB)jval_v(node->val);
+    jrb_insert_int(tree, v2, new_jval_i(1));
+  }
+}
+//------------------------------------------------------
+int hasEdge(Graph graph, int v1, int v2){
+  JRB node = jrb_find_int(graph.edges, v1);
+  JRB tree = (JRB)jval_v(node->val);
+  if (jrb_find_int(tree, v2) == NULL) return 0;
+  return 1; 
+}
+//------------------------------------------------------
+int indegree(Graph graph, int v1, int* output){
+  int total = 0;
+  JRB node;
+  jrb_traverse(node, graph.edges){
+    JRB tree = (JRB)jval_v(node->val);
+    JRB node2;
+    jrb_traverse(node2, tree){
+      if(jval_i(node2->key) == v1) output[total++] = jval_i(node->key);
+    }
+  }
+};
+//------------------------------------------------------
+int outdegree(Graph graph, int v1, int* output){
+  int total = 0;
+  JRB node = jrb_find_int(graph.edges, v1);
+  JRB tree = (JRB)jval_v(node->val);
+  jrb_traverse(node, tree){
+    output[total++] = jval_i(node->key);
+  }
+  return total;
+}
