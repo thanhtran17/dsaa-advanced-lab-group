@@ -22,7 +22,6 @@ int hasEdge(Graph graph, int v1, int v2);
 
 int indegree(Graph graph, int v, int* output);
 int outdegree(Graph graph, int v, int* output);
-int DAG(Graph graph);
 //------------------------------------------------------
 int main()
 {
@@ -126,4 +125,35 @@ int outdegree(Graph graph, int v1, int* output){
     output[total++] = jval_i(node->key);
   }
   return total;
+}
+//------------------------------------------------------
+int DFS(Graph graph, int start, int stop){
+  int a[100]; //ham luu cac dinh da xet
+  memset(a, 0, sizeof(int)*100);
+  Dllist item;
+  Dllist stack = new_dllist();
+  int output[100];
+  int vertex;
+  int n;
+
+  dll_prepend(stack, new_jval_i(start));
+  while (!dll_empty(stack)){
+    item = dll_first(stack);
+    vertex = jval_i(item->val);
+    dll_delete_node(item);
+    if (a[vertex] == 0){
+      a[vertex] = 1;
+      if (vertex == stop) return;
+      n = getAdjacentVertices(graph, vertex, output);
+      for (int i = 0; i < n; i++){
+        if (a[output[i]] == 0) dll_prepend(stack, new_jval_i(output[i]));
+        if (a[output[i]] == 1) return 1;
+      }
+    }
+  }
+  return 0;
+}
+//------------------------------------------------------
+int DAG(Graph graph, int (*func)(Graph, int, int)){
+  if (func(graph, int 0, ))
 }
