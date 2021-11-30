@@ -202,16 +202,21 @@ gboolean input_word_handler(GtkWidget *widget, GdkEventKey *event)
         if (event->keyval == keys[i] && i != 54)
         {
             strcpy(word, gtk_entry_get_text((GtkEntry *)dict.word_entry));
-            printf("%s\n", word);
+            strcat(word, (char[2]){(char)keys[i], '\0'});
+            g_print("Current Input: %s\n", word);
             if (strlen(word) > 0)
             {
-                suggestionWord(book, word);
+                suggestionWord(book, strdup(word));
             }
             return FALSE;
         }
         else if (event->keyval == keys[54] && strlen(soundex_word) > 0)
         {
             gtk_entry_set_text((GtkEntry *)dict.word_entry, soundex_word);
+            return FALSE;
+        }
+        else if (event->keyval == GDK_KEY_Tab)
+        {
             return FALSE;
         }
     }
