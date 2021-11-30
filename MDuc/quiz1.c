@@ -115,6 +115,7 @@ int indegree(Graph graph, int v1, int* output){
       if(jval_i(node2->key) == v1) output[total++] = jval_i(node->key);
     }
   }
+  return total;
 };
 //------------------------------------------------------
 int outdegree(Graph graph, int v1, int* output){
