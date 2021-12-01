@@ -32,6 +32,8 @@ Dict dict;
 //------------------------------------------------------------------------
 char word[256];
 char mean[256];
+char n[10];
+char m[10];
 char soundex_word[256];
 int soundex_index = 0;
 WTables widgets;
@@ -334,8 +336,6 @@ void readFile(BTA *head_node)
 void suggestionWord(BTA *book, char new_word[]){
   strcpy(soundex_word, "");
   soundex_index = 0;
-  char n[10];
-  char m[10];
   strcpy(n, soundex(new_word));
   if (btpos(book, 1) != 0)
   {
