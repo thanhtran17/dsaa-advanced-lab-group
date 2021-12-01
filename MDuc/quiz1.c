@@ -5,6 +5,10 @@
 #include "jrb.h"
 #include "dllist.h"
 //------------------------------------------------------
+void clear(){
+   while (getchar() != '\n');
+}
+//------------------------------------------------------
 typedef struct {
   JRB edges;
   JRB vertices;
@@ -27,21 +31,53 @@ int main()
 {
   int output[10]; 
   Graph g = createGraph();
-  addVertex(g, 0, "V0");
-  addVertex(g, 1, "V1");
-  addVertex(g, 2, "V2");
-  addVertex(g, 3, "V3");
-  addEdge(g, 1, 0);
-  addEdge(g, 1, 2);
-  addEdge(g, 2, 0);
-  addEdge(g, 1, 3);
-  int in = indegree(g, 0, output);
-  printf("%d\n", in);
-  for (int i=0; i < in; i++){
-    printf("%3d", output[i]);
-  }
-  printf("\n");
-  dropGraph(g);
+  int id;
+  char name[10];
+  int choice;
+  int v1, v2;
+
+  printf("---Menu---\n");
+  printf("1. Add Vertex\n");
+  printf("2. Add Edge\n");
+  printf("3. Check edge\n");
+  printf("4. Indgree and Outdegree of Vertex\n");
+  printf("5. Delete graph and exit\n");
+  do {
+    printf("Enter your choice: \n");
+    scanf("%d", &choice);
+    switch (choice)
+    {
+    case 1:
+      clear();
+      printf("Enter name of the vertex: \n");
+      scanf("%s", name);
+      printf("Enter id of the vertex: \n");
+      scanf("%d", &id);
+      addVertex(g, id, strdup(name));
+      break;
+    case 2:
+      printf("Enter id of 2 vertices: \n");
+      scanf("%d %d", &v1, &v2);
+      addEdge(g, v1, v2);
+      break;
+    case 3: 
+      printf("Enter id of 2 vertices: \n");
+      scanf("%d %d", &v1, &v2);
+      int check = hasEdge(g, v1, v2);
+      if (check == 1) printf("Exist egde.\n");
+      else printf("No edge between 2 vertices.\n");
+      break;
+    case 4:
+      printf("Enter the vertex's id: \n");
+      scanf("%d", &v1);
+      printf("In: %d\t Out: %d\n", indegree(g, v1, output), outdegree(g, v1, output));
+      break;
+    default:
+      dropGraph(g);
+      printf("Delete and Exit\n");
+      break;
+    }
+  } while (choice != 5);
   return 0;
 }
 //------------------------------------------------------
@@ -125,32 +161,5 @@ int outdegree(Graph graph, int v1, int* output){
     output[total++] = jval_i(node->key);
   }
   return total;
-}
-//------------------------------------------------------
-int DFS(Graph graph, int start, int stop){
-  int a[100]; //ham luu cac dinh da xet
-  memset(a, 0, sizeof(int)*100);
-  Dllist item;
-  Dllist stack = new_dllist();
-  int output[100];
-  int vertex;
-  int n;
-
-  dll_prepend(stack, new_jval_i(start));
-  while (!dll_empty(stack)){
-    item = dll_first(stack);
-    vertex = jval_i(item->val);
-    dll_delete_node(item);
-    if (a[vertex] == 0){
-      a[vertex] = 1;
-      if (vertex == stop) return;
-      n = getAdjacentVertices(graph, vertex, output);
-      for (int i = 0; i < n; i++){
-        if (a[output[i]] == 0) dll_prepend(stack, new_jval_i(output[i]));
-        if (a[output[i]] == 1) return 1;
-      }
-    }
-  }
-  return 0;
 }
 //------------------------------------------------------
