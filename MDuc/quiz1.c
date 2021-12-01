@@ -154,6 +154,3 @@ int DFS(Graph graph, int start, int stop){
   return 0;
 }
 //------------------------------------------------------
-int DAG(Graph graph, int (*func)(Graph, int, int)){
-  if (func(graph, int 0, ))
-}
