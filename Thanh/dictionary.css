@@ -1,9 +1,8 @@
 window {
-  background: linear-gradient(120deg, #f6d365, #fda085);
-  ;
-  color: white;
+  background-color: #d7dadd;
+  color: black;
   border-width: 3px;
-  font-weight: 900;
+  font-weight: 500;
   border-color: blue;
 }
 
@@ -11,41 +10,42 @@ window {
   background: rgb(73, 204, 73);
   color: white;
   border: none;
-  border-radius: 10px;
+  border-radius: 0px;
 }
 
 #searchButton {
-  background: #ff6f47;
+  background: #044cd0;
   color: white;
   border: none;
-  border-radius: 10px;
+  border-radius: 0px;
 }
 
 #defaultButton {
-  border: none;
-  border-radius: 10px;
+  background: white;
+  border: 2px #044cd0 solid;
+  border-radius: 0px;
+  color: #044cd0;
 }
 
-
 #removeButton {
-  background: rgb(230, 255, 110);
-  color: black;
+  background: #d72503;
+  color: white;
   border: none;
-  border-radius: 10px;
+  border-radius: 0px;
 }
 
 #removeButton:hover {
-  background: rgb(243, 225, 107);
+  background: rgba(215, 39, 3, 0.7);
 }
 
 #searchButton:hover {
-  background: rgb(255, 77, 28);
+  background: rgba(4, 75, 208, 0.7);
 }
 
 #addButton:hover {
-  background: rgb(55, 179, 55);
+  background: rgba(55, 179, 55, 0.7);
 }
 
 #defaultButton:hover {
-  background: lightgray;
+  background: rgba(215, 218, 221, 0.7);
 }
