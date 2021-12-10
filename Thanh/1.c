@@ -26,6 +26,9 @@ int hasEdge(Graph graph, int v1, int v2);
 
 int indegree(Graph graph, int v, int output[]);
 int outdegree(Graph graph, int v, int output[]);
+
+int DFS(Graph graph, int start);
+int DAG(Graph graph);
 //------------------------------------------------------
 int main()
 {
@@ -138,7 +141,7 @@ void addEdge(Graph graph, int v1, int v2){
 //------------------------------------------------------
 int hasEdge(Graph graph, int v1, int v2){
   JRB node = jrb_find_int(graph.edges, v1);
-  JRB tree = (JRB)jval_v(node->val);
+  JRB tree = (JRB)jval_v(node->val); // tạo 1 tree bằng đầu với node v1
   if (jrb_find_int(tree, v2) == NULL) 
     return 0;
   return 1; 
@@ -153,7 +156,7 @@ int indegree(Graph graph, int v, int output[])
   {
     if (node->key.i == v)
       continue;
-    if (jrb_find_int((JRB) (jval_v(node->val)), v) != NULL)
+    if (jrb_find_int((JRB) (jval_v(node->val)), v) != NULL) // tìm giá trị v trong cây node
       output[total++] = node->key.i;
   }
 
