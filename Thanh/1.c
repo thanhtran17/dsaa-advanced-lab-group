@@ -27,7 +27,7 @@ int hasEdge(Graph graph, int v1, int v2);
 int indegree(Graph graph, int v, int output[]);
 int outdegree(Graph graph, int v, int output[]);
 
-int DFS(Graph graph, int start);
+int DFS(Graph g, int start);
 int DAG(Graph graph);
 //------------------------------------------------------
 int main()
@@ -45,45 +45,52 @@ int main()
   printf("2. Add Edge\n");
   printf("3. Check edge\n");
   printf("4. Indgree and Outdegree of Vertex\n");
-  printf("5. Delete graph and exit\n");
+  printf("5. Topological Sort\n");
+  printf("6. Delete graph and exit\n");
   do {
-    printf("Enter your choice: \n");
+    printf("Enter your choice: ");
     scanf("%d", &choice);
     switch (choice)
     {
     case 1:
       clear();
-      printf("Enter name of the vertex: \n");
+      printf("Enter name of the vertex: ");
       scanf("%s", name);
-      printf("Enter id of the vertex: \n");
+      printf("Enter id of the vertex: ");
       scanf("%d", &id);
       addVertex(g, id, strdup(name));
       break;
     case 2:
-      printf("Enter id of 2 vertices: \n");
+      printf("Enter id of 2 vertices: ");
       scanf("%d %d", &v1, &v2);
       addEdge(g, v1, v2);
       break;
     case 3: 
-      printf("Enter id of 2 vertices: \n");
+      printf("Enter id of 2 vertices: ");
       scanf("%d %d", &v1, &v2);
       int check = hasEdge(g, v1, v2);
       if (check == 1) printf("Edge existed.\n");
       else printf("No edge between 2 vertices.\n");
       break;
     case 4:
-      printf("Enter the vertex's id: \n");
+      printf("Enter the vertex's id: ");
       scanf("%d", &v1);
       printf("In: %d\t Out: %d\n", indegree(g, v1, output), outdegree(g, v1, output));
+      break;
+    case 5:
+      if (DAG(g) == 1) {
+        printf("ERROR! Circle graph!\n");
+        break;
+      }
+      printf("Topo sort\n");
       break;
     default:
       dropGraph(g);
       printf("\n");
-
       printf("Delete and Exit\n");
       break;
     }
-  } while (choice != 5);
+  } while (choice != 6);
   return 0;
 }
 //------------------------------------------------------
@@ -150,14 +157,14 @@ int hasEdge(Graph graph, int v1, int v2){
 int indegree(Graph graph, int v, int output[])
 {
   int total = 0;
-  JRB node;
+  JRB node = NULL;
 
   jrb_traverse(node, graph.edges)
   {
     if (node->key.i == v)
       continue;
     if (jrb_find_int((JRB) (jval_v(node->val)), v) != NULL) // tìm giá trị v trong cây node
-      output[total++] = node->key.i;
+      output[total++] = jval_i(node->key);
   }
 
   return total;
@@ -167,6 +174,10 @@ int outdegree(Graph graph, int v, int output[])
 {
   int total = 0;
   JRB node = jrb_find_int(graph.edges, v);
+  
+  if (node == NULL)
+   return -1;
+
   JRB tree = (JRB) jval_v(node->val);
 
   jrb_traverse(node, tree)
@@ -175,5 +186,48 @@ int outdegree(Graph graph, int v, int output[])
   }
 
   return total;
+}
+//------------------------------------------------------
+int DFS(Graph g, int start)
+{
+  int visited[100], vertex, output[100], n, res;
+  memset(visited, 0, sizeof(int) * 100);
+
+  Dllist node;
+  Dllist stack = new_dllist();
+
+  dll_prepend(stack, new_jval_i(start));
+
+  while (!dll_empty(stack)){
+    node = dll_first(stack);
+    vertex = jval_i(node->val);
+    dll_delete_node(node);
+    if (visited[vertex] == 0){
+      visited[vertex] = 1;
+      n  = outdegree(g, vertex, output);
+      for (int i = 0; i < n; i++) {
+        if (output[i] == start){
+          res = 1;
+        }
+        if (visited[output[i]] == 0) {
+          dll_prepend(stack, new_jval_i(output[i]));
+        }
+      }
+    }
+  }
+
+  return res;
+}
+//------------------------------------------------------
+int DAG(Graph graph)
+{
+  JRB node;
+  int exist = 0;
+  jrb_traverse(node, graph.vertices)
+  {
+    exist = DFS(graph, jval_i(node->key));
+  }
+
+  return exist;
 }
 //------------------------------------------------------
