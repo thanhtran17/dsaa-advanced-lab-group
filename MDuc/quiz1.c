@@ -26,6 +26,7 @@ void swap(int a, int b)
   b = temp;
 }
 Graph createGraph();
+void delete_graph(Graph g);
 void addVertex(Graph graph, int id, char *name);
 char *getVertex(Graph graph, int id);
 void addEdge(Graph graph, int v1, int v2, double weight);
@@ -54,117 +55,101 @@ int main()
   double weight;
   int path[256];
   int length;
-  addVertex(graph, 1, "s");
-  addVertex(graph, 2, "2");
-  addVertex(graph, 3, "3");
-  addVertex(graph, 4, "4");
-  addVertex(graph, 5, "5");
-  addVertex(graph, 6, "6");
-  addVertex(graph, 7, "7");
-  addVertex(graph, 8, "t");
-  addEdge(graph, 1, 2, 9);
-  addEdge(graph, 2, 3, 24);
-  addEdge(graph, 1, 6, 14);
-  addEdge(graph, 6, 3, 18);
-  addEdge(graph, 6, 5, 30);
-  addEdge(graph, 5, 4, 11);
-  addEdge(graph, 4, 8, 6);
-  addEdge(graph, 4, 3, 6);
-  addEdge(graph, 3, 5, 2);
-  addEdge(graph, 3, 8, 19);
-  addEdge(graph, 5, 8, 16);
-  addEdge(graph, 1, 7, 15);
-  addEdge(graph, 7, 6, 5);
-  addEdge(graph, 7, 5, 20);
-  addEdge(graph, 7, 8, 44);
-  printf("Value: %g\n", shortestPath(graph, 1, 8, path, &length));
-  for (int i = length; i >= 0; i--)
+
+  do
   {
-    printf("%s->", getVertex(graph, path[i]));
-  }
-  printf("t\n");
-  // do
-  // {
-  //   printf("1. Add Vertex\n");
-  //   printf("2. Add Edges\n");
-  //   printf("3. Has Edge\n");
-  //   printf("4. Get Vertex\n");
-  //   printf("5. Indegree\n");
-  //   printf("6. Outdegree\n");
-  //   printf("7. Topological sort\n");
-  //   printf("8. Out\n");
-  //   printf("Input choice: \n");
-  //   scanf("%d", &choice);
-  //   switch (choice)
-  //   {
-  //   case 1:
-  //     printf("Input id and name: \n");
-  //     scanf("%d %s", &id, name);
-  //     addVertex(graph, id, name);
-  //     break;
-  //   case 2:
-  //     printf("Input 2 vertices v1 and v2: \n");
-  //     scanf("%d %d %g", &v1, &v2, &weight);
-  //     addEdge(graph, v1, v2, weight);
-  //     break;
-  //   case 3:
-  //     printf("Input 2 vertices v1 and v2: \n");
-  //     scanf("%d %d", &v1, &v2);
-  //     total = getEdgeValue(graph, v1, v2);
-  //     if (total == 1)
-  //     {
-  //       printf("There exists edge between %d and %d\n", v1, v2);
-  //     }
-  //     else
-  //     {
-  //       printf("There doesn't exist edge between %d and %d\n", v1, v2);
-  //     }
-  //     break;
-  //   case 4:
-  //     printf("Input id: \n");
-  //     scanf("%d", &id);
-  //     if (getVertex(graph, id) == NULL)
-  //     {
-  //       printf("There doesn't exist vertex %d", id);
-  //     }
-  //     else
-  //     {
-  //       printf("Name of vertex is %s\n", getVertex(graph, id));
-  //     }
-  //     break;
-  //   case 5:
-  //     printf("Input id: \n");
-  //     scanf("%d", &id);
-  //     printf("There are %d vertices to %d\n", indegree(graph, id, output), id);
-  //     break;
-  //   case 6:
-  //     printf("Input id: \n");
-  //     scanf("%d", &id);
-  //     if (outdegree(graph, id, output) != -1)
-  //     {
-  //       printf("There are %d vertices from %d\n", outdegree(graph, id, output), id);
-  //     }
-  //     else
-  //     {
-  //       printf("No vertices go from %d vertex \n", id);
-  //     }
-  //     break;
-  //   case 8:
-  //     return 0;
-  //   case 7:
-  //     if (DAG(graph) == 1)
-  //     {
-  //       printf("Can't make topological sort because of circle graph\n");
-  //       break;
-  //     }
-  //     topologicalSort(graph, output, &n);
-  //     for (int i = 0; i < n; i++)
-  //     {
-  //       printf("%s\n", getVertex(graph, output[i]));
-  //     }
-  //     break;
-  //   }
-  // } while (1);
+    printf("1. Add Vertex\n");
+    printf("2. Add Edges\n");
+    printf("3. Has Edge\n");
+    printf("4. Get Vertex\n");
+    printf("5. Indegree\n");
+    printf("6. Outdegree\n");
+    printf("7. Topological sort\n");
+    printf("8. Find shortest path\n");
+    printf("9. Delete graph and out\n");
+    printf("Input choice: \n");
+    scanf("%d", &choice);
+    switch (choice)
+    {
+    case 1:
+      printf("Input id and name: \n");
+      scanf("%d %s", &id, name);
+      addVertex(graph, id, name);
+      break;
+    case 2:
+      printf("Input 2 vertices v1, v2 and weight: \n");
+      scanf("%d %d %g", &v1, &v2, &weight);
+      addEdge(graph, v1, v2, weight);
+      break;
+    case 3:
+      printf("Input 2 vertices v1, v2 : \n");
+      scanf("%d %d", &v1, &v2);
+      total = getEdgeValue(graph, v1, v2);
+      if (total == 1)
+      {
+        printf("There exists edge between %d and %d\n", v1, v2);
+      }
+      else
+      {
+        printf("There doesn't exist edge between %d and %d\n", v1, v2);
+      }
+      break;
+    case 4:
+      printf("Input id: \n");
+      scanf("%d", &id);
+      if (getVertex(graph, id) == NULL)
+      {
+        printf("There doesn't exist vertex %d", id);
+      }
+      else
+      {
+        printf("Name of vertex is %s\n", getVertex(graph, id));
+      }
+      break;
+    case 5:
+      printf("Input id: \n");
+      scanf("%d", &id);
+      printf("There are %d vertices to %d\n", indegree(graph, id, output), id);
+      break;
+    case 6:
+      printf("Input id: \n");
+      scanf("%d", &id);
+      if (outdegree(graph, id, output) != -1)
+      {
+        printf("There are %d vertices from %d\n", outdegree(graph, id, output), id);
+      }
+      else
+      {
+        printf("No vertices go from %d vertex \n", id);
+      }
+      break;
+    case 9:
+      delete_graph(graph);
+      return 0;
+    case 7:
+      if (DAG(graph) == 1)
+      {
+        printf("Can't make topological sort because of circle graph\n");
+        break;
+      }
+      topologicalSort(graph, output, &n);
+      for (int i = 0; i < n; i++)
+      {
+        printf("%s\n", getVertex(graph, output[i]));
+      }
+      break;
+    case 8:
+        printf("Input 2 vertices v1 and v2: \n");
+        scanf("%d %d", &v1, &v2);
+        printf("Total weight: %g\n", shortestPath(graph, v1, v2, path, &length));
+        for (int i = length; i >= 0; i--)
+        {
+            printf("%s->", getVertex(graph, path[i]));
+        }
+        printf("%d\n", v2);
+        break;
+    }
+  } while (1);
 }
 int minDistance(Graph graph, double dist[], bool sptSet[])
 {
@@ -472,3 +457,8 @@ double shortestPath(Graph graph, int s, int t, int *path, int *length)
   }
   return total_weight;
 };
+void delete_graph(Graph g){
+  jrb_free_tree(g.edges);
+  jrb_free_tree(g.vertices);
+  return;
+}
