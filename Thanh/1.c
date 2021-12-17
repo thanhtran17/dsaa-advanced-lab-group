@@ -13,30 +13,34 @@ typedef struct {
 } Graph;
 
 typedef struct {
-  double d;
-  int parent;
-} node_;
-//------------------------------------------------------
-void insertionSort(int a[], int n, node_ node[]);
+  Graph graph;
+  JRB root;
+} HuffmanTree;
 
+typedef struct {
+  int size;
+  char bits[10];
+} Coding;
+//------------------------------------------------------
 Graph createGraph();
 void dropGraph(Graph graph);
-void topologicalSort(Graph g, int output[], int* n);
 
 void addVertex(Graph graph, int id, char *name);
 char *getVertex(Graph graph, int id);
 
 void addEdge(Graph graph, int v1, int v2, double weight);
-int hasEdge(Graph graph, int v1, int v2);
 double getEdgeValue(Graph graph, int v1, int v2);
 
-int indegree(Graph graph, int v, int output[]);
-int outdegree(Graph graph, int v, int output[]);
+void swap(int *a ,int *b);
 
-int DFS(Graph g, int start);
-int DAG(Graph graph);
+void insertQueue(JRB q, int id, int freq);
+int findMinInQueue(JRB queue, int *freq);
+void delInQueue(JRB queue, int id);
+HuffmanTree makeHuffman(char *buffer, int size);
 
-double shortestPath(Graph graph, int s, int t, int *path, int *length);
+void find_code(HuffmanTree H, int ID, Coding htable[], char code[]);
+void createHuffmanTable(HuffmanTree H, Coding htable[]);
+void compress(char *input, char *output, Coding huffmanTable[]);
 //------------------------------------------------------
 int main()
 {
@@ -89,24 +93,12 @@ int main()
 
   return 0;
 }
-////////////////////////////////////////////////
-////////////////////////////////////////////////
-void insertionSort(int a[], int n, node_ node[])
+//------------------------------------------------------
+void swap(int *a ,int *b)
 {
-  int temp;
-  int j;
-
-  for (int i = 0; i < n; i++){
-    temp = a[i];
-    for (j = i - 1; j >= 0; j--){
-      if (node[a[j]].d < node[temp].d){
-        a[j + 1] = a[j];
-      } else{
-        break;
-      }
-    }
-    a[j + 1] = temp;
-  }
+  int temp = *a;
+  *a = *b;
+  *b = temp;
 }
 //------------------------------------------------------
 Graph createGraph()
@@ -161,15 +153,6 @@ void addEdge(Graph graph, int v1, int v2, double weight){
   }
 }
 //------------------------------------------------------
-int hasEdge(Graph graph, int v1, int v2)
-{
-  JRB node = jrb_find_int(graph.edges, v1);
-  JRB tree = (JRB)jval_v(node->val); // tạo 1 tree bằng đầu với node v1
-  if (jrb_find_int(tree, v2) == NULL) 
-    return 0;
-  return 1; 
-}
-//------------------------------------------------------
 double getEdgeValue(Graph graph, int v1, int v2)
 {
   JRB node = jrb_find_int(graph.edges, v1);
@@ -182,158 +165,3 @@ double getEdgeValue(Graph graph, int v1, int v2)
   return (end == NULL) ? 0 : jval_d(end->val);
 }
 //------------------------------------------------------
-int indegree(Graph graph, int v, int output[])
-{
-  int total = 0;
-  JRB node = NULL;
-
-  jrb_traverse(node, graph.edges)
-  {
-    if (node->key.i == v)
-      continue;
-    if (jrb_find_int((JRB) (jval_v(node->val)), v) != NULL) // tìm giá trị v trong cây node
-      output[total++] = jval_i(node->key);
-  }
-
-  return total;
-}
-//------------------------------------------------------
-int outdegree(Graph graph, int v, int output[])
-{
-  int total = 0;
-  JRB node = jrb_find_int(graph.edges, v);
-  
-  if (node == NULL)
-   return -1;
-
-  JRB tree = (JRB) jval_v(node->val);
-
-  jrb_traverse(node, tree)
-  {
-    output[total++] = jval_i(node->key);
-  }
-
-  return total;
-}
-//------------------------------------------------------
-int DFS(Graph g, int start)
-{
-  int visited[100], vertex, output[100], n, res;
-  memset(visited, 0, sizeof(int) * 100);
-
-  Dllist node;
-  Dllist stack = new_dllist();
-
-  dll_prepend(stack, new_jval_i(start));
-
-  while (!dll_empty(stack)){
-    node = dll_first(stack);
-    vertex = jval_i(node->val);
-    dll_delete_node(node);
-    if (visited[vertex] == 0){
-      visited[vertex] = 1;
-      n  = outdegree(g, vertex, output);
-      for (int i = 0; i < n; i++) {
-        if (output[i] == start){
-          res = 1;
-        }
-        if (visited[output[i]] == 0) {
-          dll_prepend(stack, new_jval_i(output[i]));
-        }
-      }
-    }
-  }
-
-  return res;
-}
-//------------------------------------------------------
-int DAG(Graph graph)
-{
-  JRB node;
-  int exist = 0;
-  jrb_traverse(node, graph.vertices)
-  {
-    exist = DFS(graph, jval_i(node->key));
-  }
-
-  return exist;
-}
-//------------------------------------------------------
-void topologicalSort(Graph g, int output[], int* n)
-{
-  Dllist node;
-  Dllist queue = new_dllist();
-
-  JRB vertex;
-  int temp[100], mark[100], count;
-
-  jrb_traverse(vertex, g.vertices){
-    if (indegree(g, jval_i(vertex->key), temp) == 0) {
-      dll_append(queue, vertex->key);
-    }
-    mark[jval_i(vertex->key)] = indegree(g, jval_i(vertex->key), temp);
-  }
-
-  while (!dll_empty(queue)) {
-    node = dll_first(queue);
-    dll_delete_node(node);
-    output[(*n)++] = jval_i(node->val);
-    count = outdegree(g, jval_i(node->val), temp);
-    for (int i = 0; i < count; i++) {
-      mark[temp[i]]--;
-      if (mark[temp[i]] == 0)
-        dll_append(queue, new_jval_i(temp[i]));
-    }
-  }
-}
-//------------------------------------------------------
-double shortestPath(Graph graph, int s, int t, int *path, int *length)
-{
-  JRB ver_tmp;
-  node_ node[100];
-  int pQ[1000];
-  int number = 0; // index trong pQueue
-  *length = 0;
-
-  // set tổng giá trị đường đi nhỏ nhất của từng vertex thành infinity
-  jrb_traverse(ver_tmp, graph.vertices){
-    pQ[number++] = jval_i(ver_tmp->key);
-    node[jval_i(ver_tmp->key)].d = INFINITY;
-    node[jval_i(ver_tmp->key)].parent = -1;
-  }
-
-  // set giá trị đường đi ở điểm xuất phát là 0
-  node[s].d = 0;
-
-  // v là 1 adjacent của u
-  int u, v;
-  int outdegreeArray[100];
-  int total;
-
-  // lặp lại đến khi nào pQueue hết phần tử
-  while (number != 0) {
-    insertionSort(pQ, number, node);
-    u = pQ[number-1];
-    // tìm các outD của phần tử đầu trong pQueue
-    total = outdegree(graph, u, outdegreeArray);
-    // duyệt toàn bộ các outD của phân tử đang xét trong pQueue
-    for (int k = 0; k < total; k++) {
-      v = outdegreeArray[k];
-      if (node[v].d > node[u].d + getEdgeValue(graph, u, v)) {
-        node[v].d = node[u].d + getEdgeValue(graph, u, v);
-        node[v].parent = u;
-      }
-    }
-    number--;
-  }
-
-  node_ destination = node[t];
-  int total_weight = destination.d;
-
-  while (destination.parent != -1) {
-    path[(*length)++] = destination.parent;
-    destination = node[destination.parent];
-  }
-
-  return total_weight;
-}
