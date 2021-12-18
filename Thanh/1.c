@@ -11,7 +11,7 @@ typedef struct {
   JRB edges;
   JRB vertices;
 } Graph;
-
+//------------------------------------------------------
 typedef struct {
   Graph graph;
   JRB root;
@@ -27,6 +27,7 @@ void dropGraph(Graph graph);
 
 void addVertex(Graph graph, int id, char *name);
 char *getVertex(Graph graph, int id);
+int getVertexID(Graph graph, char c);
 
 void addEdge(Graph graph, int v1, int v2, double weight);
 double getEdgeValue(Graph graph, int v1, int v2);
@@ -40,56 +41,22 @@ HuffmanTree makeHuffman(char *buffer, int size);
 
 void find_code(HuffmanTree H, int ID, Coding htable[], char code[]);
 void createHuffmanTable(HuffmanTree H, Coding htable[]);
-void compress(char *input, char *output, Coding huffmanTable[]);
-//------------------------------------------------------
+void compress(char input[], char output[], Coding huffmanTable[]);//------------------------------------------------------
 int main()
 {
-  // general's
-  int output[500]; 
-  Graph graph = createGraph();
-  int id;
-  char name[10];
-  int choice;
-  int v1, v2;
-  int count = 0, topo[10];
-  JRB node;
+  // create a huffman tree;
+  char buffer[512] = "Home Watch TV Show Family Guy - Season 1 - Episode 1 : Death Has a Shadow";
+  HuffmanTree huf = makeHuffman(buffer, strlen(buffer));
 
-  // shortest's 
-  double weight;
-  int path[500], length;
+  // create a code table for each characters
+  char output[512];
+  Coding huffmanTable[256];  
+  createHuffmanTable(huf, huffmanTable);
+  compress(buffer, output, huffmanTable);
 
-  addVertex(graph, 1, "s");
-  addVertex(graph, 2, "2");
-  addVertex(graph, 3, "3");
-  addVertex(graph, 4, "4");
-  addVertex(graph, 5, "5");
-  addVertex(graph, 6, "6");
-  addVertex(graph, 7, "7");
-  addVertex(graph, 8, "t");
-
-  addEdge(graph, 1, 2, 9);
-  addEdge(graph, 2, 3, 24);
-  addEdge(graph, 1, 6, 14);
-  addEdge(graph, 6, 3, 18);
-  addEdge(graph, 6, 5, 30);
-  addEdge(graph, 5, 4, 11);
-  addEdge(graph, 4, 8, 6);
-  addEdge(graph, 4, 3, 6);
-  addEdge(graph, 3, 5, 2);
-  addEdge(graph, 3, 8, 19);
-  addEdge(graph, 5, 8, 16);
-  addEdge(graph, 1, 7, 15);
-  addEdge(graph, 7, 6, 5);
-  addEdge(graph, 7, 5, 20);
-  addEdge(graph, 7, 8, 44);
-
-  printf("Value: %g\n", shortestPath(graph, 1, 8, path, &length));
-
-  for (int i = length - 1; i >= 0; i--){
-    printf("%s->", getVertex(graph, path[i]));
-  }
-  
-  printf("t\n");
+  // print output 
+  printf("  Original data: %s\n", buffer);
+  printf("Compressed data: %s\n", output);
 
   return 0;
 }
@@ -140,6 +107,22 @@ char *getVertex(Graph graph, int id)
   }
 }
 //------------------------------------------------------
+int getVertexID(Graph graph, char c)
+{
+  JRB node;
+  int id = 0;
+
+  jrb_traverse(node, graph.vertices)
+  {
+    if (c == jval_c(node->val))
+    {
+      id = jval_i(node->key);
+    }
+  }
+
+  return id;
+}
+//------------------------------------------------------
 void addEdge(Graph graph, int v1, int v2, double weight){
   JRB node = jrb_find_int(graph.edges, v1);
   if (node == NULL){
@@ -165,3 +148,87 @@ double getEdgeValue(Graph graph, int v1, int v2)
   return (end == NULL) ? 0 : jval_d(end->val);
 }
 //------------------------------------------------------
+void insertQueue(JRB q, int id, int freq)
+{
+  JRB node = jrb_find_int(q, id);
+
+  if (node == NULL) {
+    jrb_insert_int(q, id, new_jval_i(freq));
+  }
+  else {
+    // cộng dồn value của node
+    int newFreq = jval_i(node->val); // trả về kiểu int
+    newFreq += freq; 
+    node->val = new_jval_i(newFreq); // -> đưa về kiểu jval_i
+  }
+}
+//------------------------------------------------------
+int findMinInQueue(JRB queue, int *freq)
+{
+  JRB node;
+  int min = 2147483647, id  = 0;
+
+  jrb_traverse(node, queue){
+    if (jval_i(node->val) < min){
+      min = jval_i(node->val);
+      id = jval_i(node->key);
+    }
+  }
+
+  *freq = min;
+
+  return id;
+}
+//------------------------------------------------------
+void delInQueue(JRB queue, int id)
+{
+  JRB node;
+
+  node = jrb_find_int(queue, id);
+  jrb_delete_node(node);
+}
+//------------------------------------------------------
+HuffmanTree makeHuffman(char *buffer, int size)
+{
+  // Create a Huffmantree
+  HuffmanTree H;
+  H.graph.edges    = make_jrb();
+  H.graph.vertices = make_jrb();
+
+  // Make a queue;
+  JRB queue = make_jrb();
+
+  // Insert each character and its freq into queue
+  int count = 0;
+  for (int i = 0; i < size; i++) {
+    int id = getVertexID(H.graph, buffer[i]);
+    if (id == 0) {
+      count++;
+      id = count;
+      addVertex(H.graph, id, buffer[i]);
+      insertQueue(queue, id, 1);
+    }
+    else {
+      insertQueue(queue, id , 1);
+    }
+  }
+
+  // build the huffman tree
+  
+  H.root = jrb_find_int(H.graph.vertices, count);
+
+  return H;
+}
+//------------------------------------------------------
+void compress(char input[], char output[], Coding huffmanTable[])
+{
+  for (int i = 0; i < strlen(input); i++)
+  {
+    strcat(output, huffmanTable[input[i]].bits);
+  }
+}
+//------------------------------------------------------
+void createHuffmanTable(HuffmanTree H, Coding htable[])
+{
+
+}
