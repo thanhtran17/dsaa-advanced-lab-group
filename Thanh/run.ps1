@@ -1,5 +1,6 @@
-gcc -c Q2.c
-gcc -c jval.c
+gcc -c 1.c
+gcc -c dllist.c
 gcc -c jrb.c
-gcc -o quiz2 Q2.o jval.o jrb.o
-./quiz2
+gcc -c jval.c
+gcc -o 1 1.o dllist.o jrb.o jval.o
+./1
