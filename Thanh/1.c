@@ -22,6 +22,7 @@ void insertionSort(int a[], int n, node_ node[]);
 Graph createGraph();
 void dropGraph(Graph graph);
 void topologicalSort(Graph g, int output[], int* n);
+void printGraph(Graph g);
 
 void addVertex(Graph graph, int id, char *name);
 char *getVertex(Graph graph, int id);
@@ -63,18 +64,21 @@ int main()
   addVertex(graph, 7, "7");
   addVertex(graph, 8, "t");
 
-  addEdge(graph, 1, 2, 10);
-  addEdge(graph, 1, 3, 15);
-  addEdge(graph, 2, 4, 15);
-  addEdge(graph, 2, 6, 50);
-  addEdge(graph, 3, 4, 50);
-  addEdge(graph, 3, 5, 10);
-  addEdge(graph, 3, 8, 120);
-  addEdge(graph, 4, 5, 50);
-  addEdge(graph, 4, 6, 10);
-  addEdge(graph, 3, 8, 5);
-  addEdge(graph, 5, 7, 200);
-  addEdge(graph, 7, 8, 60);
+  addEdge(graph, 1, 2, 9);
+  addEdge(graph, 2, 3, 24);
+  addEdge(graph, 1, 6, 14);
+  addEdge(graph, 6, 3, 18);
+  addEdge(graph, 6, 5, 30);
+  addEdge(graph, 5, 4, 11);
+  addEdge(graph, 4, 8, 6);
+  addEdge(graph, 4, 3, 6);
+  addEdge(graph, 3, 5, 2);
+  addEdge(graph, 3, 8, 19);
+  addEdge(graph, 5, 8, 16);
+  addEdge(graph, 1, 7, 15);
+  addEdge(graph, 7, 6, 5);
+  addEdge(graph, 7, 5, 20);
+  addEdge(graph, 7, 8, 44);
 
   printf("Value: %g\n", shortestPath(graph, 1, 8, path, &length));
 
@@ -334,3 +338,4 @@ double shortestPath(Graph graph, int s, int t, int *path, int *length)
 
   return total_weight;
 }
+//------------------------------------------------------
