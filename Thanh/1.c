@@ -4,8 +4,10 @@
 #include "jval.h"
 #include "jrb.h"
 #include "dllist.h"
-#include <math.h>
-#include <stdbool.h>
+//------------------------------------------------------
+void clear(){
+   while (getchar() != '\n');
+}
 //------------------------------------------------------
 typedef struct {
   JRB edges;
@@ -13,107 +15,174 @@ typedef struct {
 } Graph;
 
 typedef struct {
-  double d;
+  int d;
   int parent;
 } node_;
 //------------------------------------------------------
-void insertionSort(int a[], int n, node_ node[]);
-
 Graph createGraph();
+void printMatrix(Graph g);
 void dropGraph(Graph graph);
-void topologicalSort(Graph g, int output[], int* n);
-void printGraph(Graph g);
-
 void addVertex(Graph graph, int id, char *name);
 char *getVertex(Graph graph, int id);
-
-void addEdge(Graph graph, int v1, int v2, double weight);
+void getAdjacentVertices(Graph g);
+void mostIndegree(Graph g, int* maxIndegree);
+void addEdge(Graph graph, int v1, int v2, int weight);
 int hasEdge(Graph graph, int v1, int v2);
-double getEdgeValue(Graph graph, int v1, int v2);
-
+int getEdgeValue(Graph graph, int v1, int v2);
 int indegree(Graph graph, int v, int output[]);
 int outdegree(Graph graph, int v, int output[]);
-
 int DFS(Graph g, int start);
-int DAG(Graph graph);
-
-double shortestPath(Graph graph, int s, int t, int *path, int *length);
+void insertionSort(int a[], int n, node_ node[]);
+int shortestPath(Graph graph, int s, int t, int *path, int *length);
+int shortestWalkingPath(Graph graph, int s, int t, int *pathW, int *lengthW);
 //------------------------------------------------------
 int main()
 {
-  // general's
-  int output[500]; 
-  Graph graph = createGraph();
+  // OPEN INPUT FILE
+  char* inputPath = "dothi.txt";
+  int m, n, a[500];
+
+  int matrix[255][255];
+  FILE *fi = fopen(inputPath, "rt");
+  
+  if (fi == NULL){
+    printf("ERROR opening input file\n");
+    return -1;
+  }
+
+  // GRAPH HANDLING
+  Graph g = createGraph();
   int id;
+  char buf[BUFSIZ];
   char name[10];
   int choice;
-  int v1, v2;
-  int count = 0, topo[10];
+  int v1, v2, time;
+  int nonWalking[255];
+  int maxIndegree = -1;
+  int output[100], numOfAdj;
+  int id1, id2, path[255], length, totaltime;
+  int id1W, id2W, pathW[255], lengthW, totaltimeW;
   JRB node;
-
-  // shortest's 
-  double weight;
-  int path[500], length;
-
-  addVertex(graph, 1, "s");
-  addVertex(graph, 2, "2");
-  addVertex(graph, 3, "3");
-  addVertex(graph, 4, "4");
-  addVertex(graph, 5, "5");
-  addVertex(graph, 6, "6");
-  addVertex(graph, 7, "7");
-  addVertex(graph, 8, "t");
-
-  addEdge(graph, 1, 2, 9);
-  addEdge(graph, 2, 3, 24);
-  addEdge(graph, 1, 6, 14);
-  addEdge(graph, 6, 3, 18);
-  addEdge(graph, 6, 5, 30);
-  addEdge(graph, 5, 4, 11);
-  addEdge(graph, 4, 8, 6);
-  addEdge(graph, 4, 3, 6);
-  addEdge(graph, 3, 5, 2);
-  addEdge(graph, 3, 8, 19);
-  addEdge(graph, 5, 8, 16);
-  addEdge(graph, 1, 7, 15);
-  addEdge(graph, 7, 6, 5);
-  addEdge(graph, 7, 5, 20);
-  addEdge(graph, 7, 8, 44);
-
-  printf("Value: %g\n", shortestPath(graph, 1, 8, path, &length));
-
-  for (int i = length - 1; i >= 0; i--){
-    printf("%s->", getVertex(graph, path[i]));
-  }
   
-  printf("t\n");
+  do {
+    printf("-----------------Menu-----------------\n");
+    printf("1. Read File & Print Matrix\n");
+    printf("2. Print Adjacent Vertices\n");
+    printf("3. a. Walking\n   b. Highest Indegree\n");
+    printf("4. Shortest Path (s to t)\n");
+    printf("5. Shortest Walking Path (s to t)\n");
+    printf("6. Delete graph and exit\n");
+    printf("--------------------------------------\n");
+    printf("--> Enter your choice: ");
+    scanf("%d", &choice);
+    switch (choice)
+    {
+    // Read file and print matrix
+    case 1:
+      printf("\nREAD FILE AND PRINT MATRIX\n\n");
+      clear();
+      fscanf(fi, "%d %d", &m, &n);
+
+      for (int i = 1; i <= m; i++){
+          sprintf(buf, "%d", i);
+          addVertex(g, i, buf);
+      }
+
+      for (int i = 0; i < n; i++){
+        fscanf(fi, "%d %d %d", &v1, &v2, &time);
+
+        if (time < 50) {
+          nonWalking[v1] = 1;
+          nonWalking[v2] = 1;
+        }
+       
+        addEdge(g, v1, v2, time);
+
+        matrix[v1][v2] = time;
+        matrix[v2][v1] = time;
+      }
+
+      printf("     ");
+      for (int i = 1; i <= m; i++){
+        printf("%4d:", i);
+      }
+      printf("\n\n");
+
+      for (int i = 1; i <= m; i++) {
+        printf("%d:   ", i);
+        for (int j = 1; j <= m; j++) {
+          printf("%4d ", matrix[i][j]);
+        }
+        printf("\n");
+      }
+      printf("\n");
+
+      break;
+    case 2:
+      printf("\nPRINT ADJACENT VERTICES\n\n");
+      getAdjacentVertices(g);
+      printf("\n");
+      break;
+    case 3: 
+      printf("\na. WALKING VERTICES: \n\n");
+      for (int i = 1; i <= m; i++) {
+        if (nonWalking[i] != 1){
+          printf("%4d", i);
+        }
+      }
+      printf("\n\n");
+      printf("\nb. VERTEX WITH MOST INDEGREE: \n\n");
+      mostIndegree(g, &maxIndegree);
+      
+      break;
+    case 4:
+      printf("\nSHORTEST PATH FROM S TO T\n\n");
+      printf("--> Enter start and destination: ");
+      scanf("%d %d", &id1, &id2);
+
+      totaltime = shortestPath(g, id1, id2, path, &length);
+
+      if (totaltime == 999999) {
+        printf("   ERR! Route not found\n\n");
+      }
+      else {
+        printf("\n   Total time: %d hours\n\n   Path      : ", totaltime);
+        for (int i = length - 1; i >= 0; i--){
+          printf("%d -> ", path[i]);
+        }
+        printf("%d\n\n", id2);
+      }
+
+     break;
+    case 5:
+      printf("\nSHORTEST \"WALKING\" PATH FROM S TO T\n\n");
+      printf("--> Enter start and destination: ");
+      scanf("%d %d", &id1, &id2);
+
+      totaltimeW = shortestWalkingPath(g, id1, id2, pathW, &lengthW);
+
+      if (totaltimeW == 999999) {
+        printf("   ERR! Route not found\n\n");
+      }
+      else {
+        printf("\n   Total time: %d hours\n\n   Path      : ", totaltimeW);
+        for (int i = lengthW - 1; i >= 0; i--){
+          printf("%d -> ", pathW[i]);
+        }
+        printf("%d\n\n", id2);
+      }
+
+      break;
+    }
+  } while (choice != 6);
 
   return 0;
-}
-////////////////////////////////////////////////
-////////////////////////////////////////////////
-void insertionSort(int a[], int n, node_ node[])
-{
-  int temp;
-  int j;
-
-  for (int i = 0; i < n; i++){
-    temp = a[i];
-    for (j = i - 1; j >= 0; j--){
-      if (node[a[j]].d < node[temp].d){
-        a[j + 1] = a[j];
-      } else{
-        break;
-      }
-    }
-    a[j + 1] = temp;
-  }
 }
 //------------------------------------------------------
 Graph createGraph()
 {
   Graph g;
-  g.edges = make_jrb();
+  g.edges    = make_jrb();
   g.vertices = make_jrb();
   return g;
 }
@@ -149,38 +218,39 @@ char *getVertex(Graph graph, int id)
   }
 }
 //------------------------------------------------------
-void addEdge(Graph graph, int v1, int v2, double weight){
-  JRB node = jrb_find_int(graph.edges, v1);
-  if (node == NULL){
-    JRB tree = make_jrb();
-    jrb_insert_int(graph.edges, v1, new_jval_v(tree));
-    jrb_insert_int(tree, v2, new_jval_d(weight));
+void addEdge(Graph graph, int v1, int v2, int weight){
+  JRB node1 = jrb_find_int(graph.edges, v1);
+  JRB node2 = jrb_find_int(graph.edges, v2);
+
+  if (node1 == NULL){
+    JRB tree1 = make_jrb();
+    jrb_insert_int(graph.edges, v1, new_jval_v(tree1));
+    jrb_insert_int(tree1, v2, new_jval_i(weight));
   }
   else {
-    JRB tree = (JRB)jval_v(node->val);
-    jrb_insert_int(tree, v2, new_jval_d(weight));
+    JRB tree1 = (JRB)jval_v(node1->val);
+    jrb_insert_int(tree1, v2, new_jval_i(weight));
+  }
+
+  if (node2 == NULL){
+    JRB tree2 = make_jrb();
+    jrb_insert_int(graph.edges, v2, new_jval_v(tree2));
+    jrb_insert_int(tree2, v1, new_jval_i(weight));
+  }
+  else {
+    JRB tree2 = (JRB)jval_v(node2->val);
+    jrb_insert_int(tree2, v1, new_jval_i(weight));
   }
 }
 //------------------------------------------------------
-int hasEdge(Graph graph, int v1, int v2)
-{
+int hasEdge(Graph graph, int v1, int v2){
   JRB node = jrb_find_int(graph.edges, v1);
-  JRB tree = (JRB)jval_v(node->val); // tạo 1 tree bằng đầu với node v1
+  JRB tree = (JRB)jval_v(node->val); 
+  
   if (jrb_find_int(tree, v2) == NULL) 
     return 0;
+
   return 1; 
-}
-//------------------------------------------------------
-double getEdgeValue(Graph graph, int v1, int v2)
-{
-  JRB node = jrb_find_int(graph.edges, v1);
-  
-  if (node == NULL)
-    return 0;
-
-  JRB end = jrb_find_int(jval_v(node->val), v2);
-
-  return (end == NULL) ? 0 : jval_d(end->val);
 }
 //------------------------------------------------------
 int indegree(Graph graph, int v, int output[])
@@ -248,47 +318,55 @@ int DFS(Graph g, int start)
   return res;
 }
 //------------------------------------------------------
-int DAG(Graph graph)
+void getAdjacentVertices(Graph g)
 {
-  JRB node;
-  int exist = 0;
-  jrb_traverse(node, graph.vertices)
-  {
-    exist = DFS(graph, jval_i(node->key));
-  }
+  JRB temp;
 
-  return exist;
-}
-//------------------------------------------------------
-void topologicalSort(Graph g, int output[], int* n)
-{
-  Dllist node;
-  Dllist queue = new_dllist();
+  jrb_traverse(temp, g.vertices){
+    int output[100];
+    int size = outdegree(g, temp->key.i, output);
+    
+    printf("Castle %d: ", temp->key.i);
 
-  JRB vertex;
-  int temp[100], mark[100], count;
-
-  jrb_traverse(vertex, g.vertices){
-    if (indegree(g, jval_i(vertex->key), temp) == 0) {
-      dll_append(queue, vertex->key);
+    if (size > 0){
+      for (int i = 0; i < size; i++){
+        printf("%4d", output[i]);
+      }
+    }  
+    else {
+      printf("No adjacent vertices");
     }
-    mark[jval_i(vertex->key)] = indegree(g, jval_i(vertex->key), temp);
-  }
 
-  while (!dll_empty(queue)) {
-    node = dll_first(queue);
-    dll_delete_node(node);
-    output[(*n)++] = jval_i(node->val);
-    count = outdegree(g, jval_i(node->val), temp);
-    for (int i = 0; i < count; i++) {
-      mark[temp[i]]--;
-      if (mark[temp[i]] == 0)
-        dll_append(queue, new_jval_i(temp[i]));
-    }
+    printf("\n");
   }
 }
 //------------------------------------------------------
-double shortestPath(Graph graph, int s, int t, int *path, int *length)
+void mostIndegree(Graph g, int* maxIndegree)
+{
+  JRB node; 
+
+  jrb_traverse(node, g.vertices) {
+    int out[255];
+    int nOi = indegree(g, jval_i(node->key), out);
+    
+    if (nOi >= (*maxIndegree)) {
+      (*maxIndegree) = nOi;
+    }
+  }
+
+  jrb_traverse(node, g.vertices) {
+    int out[255];
+    int nOi = indegree(g, jval_i(node->key), out);
+    
+    if (nOi == (*maxIndegree)) {
+      printf("%4d", jval_i(node->key));
+    }
+  }
+
+  printf("\n\n");
+}
+//------------------------------------------------------
+int shortestPath(Graph graph, int s, int t, int *path, int *length)
 {
   JRB ver_tmp;
   node_ node[100];
@@ -299,7 +377,7 @@ double shortestPath(Graph graph, int s, int t, int *path, int *length)
   // set tổng giá trị đường đi nhỏ nhất của từng vertex thành infinity
   jrb_traverse(ver_tmp, graph.vertices){
     pQ[number++] = jval_i(ver_tmp->key);
-    node[jval_i(ver_tmp->key)].d = INFINITY;
+    node[jval_i(ver_tmp->key)].d = 999999;
     node[jval_i(ver_tmp->key)].parent = -1;
   }
 
@@ -339,3 +417,85 @@ double shortestPath(Graph graph, int s, int t, int *path, int *length)
   return total_weight;
 }
 //------------------------------------------------------
+void insertionSort(int a[], int n, node_ node[])
+{
+  int temp;
+  int j;
+
+  for (int i = 0; i < n; i++){
+    temp = a[i];
+    for (j = i - 1; j >= 0; j--){
+      if (node[a[j]].d < node[temp].d){
+        a[j + 1] = a[j];
+      } else{
+        break;
+      }
+    }
+    a[j + 1] = temp;
+  }
+}
+//------------------------------------------------------
+int getEdgeValue(Graph graph, int v1, int v2)
+{
+  JRB node = jrb_find_int(graph.edges, v1);
+  
+  if (node == NULL)
+    return 0;
+
+  JRB end = jrb_find_int(jval_v(node->val), v2);
+
+  return (end == NULL) ? 0 : jval_i(end->val);
+}
+//------------------------------------------------------
+int shortestWalkingPath(Graph graph, int s, int t, int *pathW, int *lengthW)
+{
+  JRB ver_tmp;
+  node_ node[100];
+  int pQ[1000];
+  int number = 0; // index trong pQueue
+  *lengthW = 0;
+
+  // set tổng giá trị đường đi nhỏ nhất của từng vertex thành infinity
+  jrb_traverse(ver_tmp, graph.vertices){
+    pQ[number++] = jval_i(ver_tmp->key);
+    node[jval_i(ver_tmp->key)].d = 999999;
+    node[jval_i(ver_tmp->key)].parent = -1;
+  }
+
+  // set giá trị đường đi ở điểm xuất phát là 0
+  node[s].d = 0;
+
+  // v là 1 adjacent của u
+  int u, v;
+  int outdegreeArray[100];
+  int total;
+
+  // lặp lại đến khi nào pQueue hết phần tử
+  while (number != 0) {
+    insertionSort(pQ, number, node);
+    u = pQ[number-1];
+    // tìm các outD của phần tử đầu trong pQueue
+    total = outdegree(graph, u, outdegreeArray);
+    // duyệt toàn bộ các outD của phân tử đang xét trong pQueue
+    for (int k = 0; k < total; k++) {
+      v = outdegreeArray[k];
+      if ((node[v].d > node[u].d + getEdgeValue(graph, u, v))) {
+        if (getEdgeValue(graph, u, v) >= 50) {
+          node[v].d = node[u].d + getEdgeValue(graph, u, v);
+          node[v].parent = u;
+        }
+      }
+    }
+    number--;
+  }
+
+  node_ destination = node[t];
+  int total_weight = destination.d;
+
+  while (destination.parent != -1) {
+    pathW[(*lengthW)++] = destination.parent;
+    destination = node[destination.parent];
+  }
+
+  return total_weight;
+}
