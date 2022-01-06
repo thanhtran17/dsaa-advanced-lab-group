@@ -54,7 +54,7 @@ int main()
   int path[256], output[256], total, choice, n = 0;
   int v1, v2, id, length;
   char output_huffman[256] = "", name[256];
-  char buffer[256] = "Lorem Ipsum is siso the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and mo";
+  char buffer[256] = "Lorem Ipsum is containing Lorem Ipsum passages, and mo";
   HuffmanTree huf = makeHuffman(buffer, strlen(buffer));
   
   createHuffmanTable(huf, huffmanTable);
