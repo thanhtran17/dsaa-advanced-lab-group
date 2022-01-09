@@ -214,7 +214,9 @@ int main()
 	int length = 0;
 	double total;
 	char busstopS[DATA], busB[DATA];
-
+	char name[256];
+	int t1, t2;
+	int id_bus;
 	// File Handling
 	FILE *f1, *f2, *f3;
 
@@ -244,18 +246,18 @@ int main()
 	copyData(bus, file1, file2);
 	dataProcess(g, busTable);
 	makeBusesTable(busTable, buses, sizeBuses);
-	printAllStations(g);
-	total = shortestPath(g, 5, 25, path, &length);
-	if (total == INT_MAX)
-	{
-		printf("ROUTE NOT FOUND\n");
-		return;
-	}
-	printf("Length: %g\n", total);
-	for (int i = length - 1; i >= 0; i--)
-	{
-		printf("%d->", path[i]);
-	}
+	// findAllBusesGoFromStation(g, busTable, "VAN_PHUC");
+	// total = shortestPath(g, 5, 25, path, &length);
+	// if (total == INT_MAX)
+	// {
+	// 	printf("ROUTE NOT FOUND\n");
+	// 	return;
+	// }
+	// printf("Length: %g\n", total);
+	// for (int i = length - 1; i >= 0; i--)
+	// {
+	// 	printf("%d->", path[i]);
+	// }
 	// printf("%d\n", 103);
 	// printAllStations(g);
 	// JRB node;
@@ -279,74 +281,63 @@ int main()
 	// }
 
 	// Menu
-	// do
-	// {
-	// 	printf("\n---------------------------------------------------\n");
-	// 	printf("DSAA ADVANCED LAB - DDT'S PROJECT 2 - HANOI BUSLINE \n");
-	// 	printf("---------------------------------------------------\n\n");
-	// 	printf("1. Bus stations at which bus B stops.\n");
-	// 	printf("2. Shortest path from 1 to 2.\n");
-	// 	printf("3. Buses which stop at bus station S.\n");
-	// 	printf("4. Delete graph and exit the project.\n\n");
-	// 	printf("---------------------------------------------------\n");
-	// 	printf("--> Enter your choice: ");
-	// 	scanf("%d", &choice);
-	// 	printf("---------------------------------------------------\n");
-	// 	switch (choice)
-	// 	{
-	// 	case 1:
-	// 		printFileData(bus, file1, file2);
-	// 		printBuses(busTable);
-	// 		break;
+	do
+	{
+		printf("\n---------------------------------------------------\n");
+		printf("DSAA ADVANCED LAB - DDT'S PROJECT 2 - HANOI BUSLINE \n");
+		printf("---------------------------------------------------\n\n");
+		printf("1. Tìm đường đi ngắn nhất giữa 2 bến xe buýt\n");
+		printf("2. In ra tất cả các xe buýt đi qua 1 bến.\n");
+		printf("3. In ra tất cả bến đi mà qua 1 xe buýt\n");
+		printf("4. Kết thúc chương trình, xóa toàn bộ dữ liệu\n\n");
+		printf("---------------------------------------------------\n");
+		printf("--> Lựa chọn của bạn: ");
+		scanf("%d", &choice);
+		printf("---------------------------------------------------\n");
+		switch (choice)
+		{
+		case 1:
+			printAllStations(g);
+			printf("Nhập id của 2 bến xe:\n");
+			scanf("%d%d", &t1, &t2);
+			total = shortestPath(g, t1, t2, path, &length);
+			if (total == INT_MAX)
+			{
+				printf("Không có đường đi nào giữa 2 điểm này\n");
+			}
+			else
+			{
+				printf("Độ dài ngắn nhất: %g\n", total);
+				for (int i = length - 1; i >= 0; i--)
+				{
+					printf("%d->", path[i]);
+				}
+				printf("%d\n", t2);
+			}
+			break;
 
-	// 	case 2:
-	// 		printVertices(g);
+		case 2:
+			printAllStations(g);
+			findAllBusesGoFromStation(b_s, busTable);
+			break;
+		case 3:
+			printAllBus(busTable);
+			printf("Nhập địa chỉ của buýt (số):\n");
+			scanf("%d", &id_bus);
+			findStationsFromBus(b_s, id_bus);
+			break;
 
-	// 		printf("\nSHORTEST PATH\n\n");
-	// 		printf("--> Enter starting point ID: ");
-	// 		scanf("%d", &id1);
-	// 		getchar();
-
-	// 		if (getVertex(g, id1) == NULL)
-	// 			printf("  ERR! Bus station not found!\n");
-	// 		else
-	// 		{
-	// 			printf("--> Enter destination ID   : ");
-	// 			scanf("%d", &id2);
-	// 			getchar();
-
-	// 			if (getVertex(g, id2) == NULL)
-	// 			{
-	// 				printf("\n  ERR! Bus station not found!\n\n");
-	// 			}
-	// 			else if (id1 == id2)
-	// 			{
-	// 				printf("\n  ERR! Starting point and Destination ID could not be the same!\n\n");
-	// 			}
-	// 			else
-	// 			{
-	// 				int output[DATA], outputSize = 0;
-
-	// 				printShortestPath(g, id1, id2, &outputSize, output);
-	// 				printPath(g, busTable, &outputSize, output);
-	// 			}
-	// 		}
-	// 		break;
-
-	// 	case 3:
-	// 		printf("  --> Enter the ID of bus station S: ");
-	// 		scanf(" %[^\n]*c", busstopS);
-	// 		break;
-
-	// 	case 4:
-	// 		jrb_free_tree(busTable);
-	// 		jrb_free_tree(busInfo);
-	// 		freeGraph(g);
-	// 		printf("Graph deleted! Exit the Program...\n");
-	// 		return 0;
-	// 		break;
-	// 	}
-	// } while (choice != 5);
+		case 4:
+			jrb_free_tree(busTable);
+			jrb_free_tree(busInfo);
+			jrb_free_tree(lineTable);
+			freeGraph(g);
+			freeGraph(b_s);
+			printf("Tạm biệt NGÀI \n");
+			return 0;
+			break;
+		}
+	} while (choice != 5);
 	return 0;
 }
 //-------------------------------------------------------------------

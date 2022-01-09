@@ -304,7 +304,7 @@ void findStationsFromBus(Graph graph, int id_bus)
 	{
 		if (jval_i(node->key) == id_bus)
 		{
-			printf("All stations that bus %d go\n", id_bus);
+			printf("Tất cả các bến mà xe buýt có địa chỉ %d đi qua\n", id_bus);
 			JRB tree = jval_v(node->val);
 			jrb_traverse(ptr, tree)
 			{
@@ -313,7 +313,7 @@ void findStationsFromBus(Graph graph, int id_bus)
 			return;
 		}
 	}
-	printf("There are no bus which had id like that!\n");
+	printf("Không có bến nào đi qua địa chỉ buýt này!\n");
 	return;
 }
 //-------------------------------------------------------------------
@@ -338,9 +338,10 @@ void printAllStations(Graph g)
 void findAllBusesGoFromStation(Graph graph, JRB busTable)
 {
 	char name[256];
-	printf("Input name of station\n");
+	printf("Nhập tên bến xe:\n");
 	scanf("%s", name);
 	JRB node;
+	int flag = 0;
 	jrb_traverse(node, graph.edges)
 	{
 		JRB tree = jval_v(node->val);
@@ -349,9 +350,14 @@ void findAllBusesGoFromStation(Graph graph, JRB busTable)
 		{
 			if (strcmp(jval_s(ptr->val), name) == 0)
 			{
+				flag = 1;
 				printf("%s\n", jval_s(jrb_find_int(busTable, jval_i(node->key))->val));
 			}
 		}
+	}
+	if (flag == 0)
+	{
+		printf("Không có station này\n");
 	}
 	return;
 }

@@ -1,6 +1,7 @@
 {
 	"files.associations": {
 		"*.js": "javascriptreact",
-		"jval.h": "c"
+		"jval.h": "c",
+		"dllist.h": "c"
 	}
 }
