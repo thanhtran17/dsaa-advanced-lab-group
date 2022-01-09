@@ -150,21 +150,21 @@ void printPath(Graph g, JRB busTable, int *sizeOutput, int *output)
 	printf("\nPATH BY NAME: \n\n");
 
 	for (i = *sizeOutput - 1; i > 0; i--) {
-		char*station1 = getVertex(g, output[i]);
+		char* temp = getVertex(g, output[i]);
 
-		if (station1 == NULL) {
-			printf("station1 at printPath is null\n");
+		if (temp == NULL) {
+			printf("Error! Station not found! Something bad happened!\n");
 			exit(0);
 		}
 
-		char*edgeValue = getEdgeValue(g, output[i], output[i - 1]);
+		char* edge_temp = getEdgeValue(g, output[i], output[i - 1]);
 
-		if (edgeValue == NULL) {
-			printf("Edge value is null\n");
+		if (edge_temp == NULL) {
+			printf("Error! Station not found! Something bad happened!\n");
 			exit(0);
 		}
 		
-		printf("--> %s (%s) \n", station1, jval_s(jrb_find_str(busTable, strdup(edgeValue))->val));
+		printf("--> %s (%s) \n", temp, jval_s(jrb_find_str(busTable, strdup(edge_temp))->val));
 	}
 
 	printf("--> %s\n", getVertex(g, output[i]));
