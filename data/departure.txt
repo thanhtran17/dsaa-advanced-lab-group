@@ -1,0 +1,21 @@
+B01 
+GIA_LÂM - NGÔ_GIA_KHẢM - NGỌC_LÂM - NGUYỄN_VĂN_CỪ - CẦU_CHƯƠNG_DƯƠNG - TRẦN_NHẬT_DUẬT - YÊN_PHỤ - HÀNG_ĐẬU - HÀNG_THAN - QUÁN_THÁNH - HÀNG_CÓT - HÀNG_GÀ - HÀNG_ĐIẾU - ĐƯỜNG_THÁNH - PHỦ_DOÃN - TRIỆU_QUỐC_ĐẠT - HAI_BÀ_TRƯNG - LÊ_DUẨN - KHÂM_THIÊN - Ô_CHỢ_DỪA - NGUYỄN_LƯƠNG_BẰNG - TÂY_SƠN - NGÃ_TƯ_SỞ - NGUYỄN_TRÃI - TRẦN_PHÚ(HÀ_ĐÔNG) - QUANG_TRUNG(HÀ_ĐÔNG) - BA_LA - QUỐC_LỘ_6 - YÊN_NGHĨA
+B02
+BÁC_CO- TRẦN_KHÁNH_DƯ - TRẦN_HƯNG_ĐẠO - LÊ_THÁNH_TÔNG - HAI_BÀ_TRƯNG - QUANG_TRUNG - TRÀNG_THI - ĐIỆN_BIÊN_PHỦ - TRẦN_PHÚ - CHU_VĂN_AN - TÔN_ĐỨC_THẮNG - NGUYỄN_LƯƠNG_BẰNG - TÂY_SƠN - NGÃ_TƯ_SỞ - NGUYỄN_TRÃI - QUANG_TRUNG(HÀ_ĐÔNG) - BA_LA - QUỐC_LỘ_6 - YÊN_NGHĨA
+B03A
+GIÁP_BÁT - GIẢI_PHÓNG - LÊ_DUẨN - NGUYỄN_THƯỢNG_HIỀN - YẾT_KIỂU - TRẦN_HƯNG_ĐẠO - TRẦN_KHÁNH_DƯ - TRẦN_QUANG_KHẢI - TRẦN_NHẬT_DUẬT - CẦU_CHƯƠNG_DƯƠNG - NGUYỄN_VĂN_CỪ - NGUYỄN_SƠN - NGỌC_LÂM - NGÔ_GIA_KHẢM - GIA_LÂM
+B03B
+NƯỚC_NGẦM - NGỌC_HỒI - GIẢI_PHÓNG - ĐẠI_LA - MINH_KHAI - CẦU_VĨNH_TUY - ĐÀM_QUANG_TRUNG - CHU_HUY_MÂN - HỘI_XÁ - VŨ_XUÂN_THIỀU - PHÚC_LỢI - GIANG_BIÊN
+B04
+YÊN_PHỤ - TRẦN_NHẬT_DUẬT - NGUYỄN_HỮU_HUÂN - LÝ_THÁI_TỔ - NGÔ_QUYỀN - HAI_BÀ_TRƯNG - YECXANH - LÒ_ĐÚC - KIM_NGƯU - TAM_TRINH - CẦU_VOI - NGUYỄN_TAM_TRINH - LĨNH_NAM - CẦU_THANH_TRÌ - PHÁP_VÂN - NGỌC_HỒI - TRẦN_THỦ_ĐỘ - NGUYỄN_BỒ - BV_NỘI_TIẾT_TW
+B05
+LINH_ĐÀM - NGUYỄN_DUY_TRINH - NGUYỄN_HỮU_THỌ - NGHIÊM_XUÂN_YÊM - KIM_GIANG - KHƯƠNG_ĐÌNH - NGUYỄN_TRÃI - NGUYỄN_TUÂN - HOÀNG_MINH_GIÁM - NGUYỄN_CHÁNH - MẠC_THÁI_TÔNG - TRUNG_KÍNH - PHẠM_VĂN_BẠCH - TÔN_THẤT_THUYẾT - NGUYỄN_HOÀNG - HÀM_NGHI - NGUYỄN_CƠ_THẠCH - HỒ_TÙNG_MẬU - CẦU_DIỄN - PHÚ_DIỄN
+B06
+GIÁP_BÁT - GIẢI_PHÓNG - NGỌC_HỒI - QUỐC_LỘ_1 - LIÊN_NINH - QUÁN_GÁNH - THƯỜNG_TÍN - TÍA - ĐỖ_XÁ - NGHỆ - PHÚ_XUYÊN - GUỘT - CẦU_GIẼ - 
+B07
+CẦU_GIẤY - NGUYỄN_VĂN_HUYÊN - HOÀNG_QUỐC_VIỆT - PHẠM_VĂN_ĐỒNG - CẦU_THĂNG_LONG - VÕ_VĂN_KIỆT - NỘI_BÀI
+B08A
+LONG_BIÊN - YÊN_PHỤ - TRẦN_NHẬT_DUẬT - NGUYỄN_HỮU_HUÂN - LÝ_THÁI_TỔ - NGÔ_QUYỀN - LÝ_THƯỜNG_KIỆT - BÀ_TRIỆU - LÊ_ĐẠI_HÀNH - BẠCH_MAI - LÊ_THANH_NGHỊ - TRẦN_ĐẠI_NGHĨA - ĐẠI_LA - GIẢI_PHÓNG - NGỌC_HỒI - NGŨ_HIỆP - ĐÔNG_MỸ
+B08B
+LONG_BIÊN - YÊN_PHỤ - TRẦN_NHẬT_DUẬT - NGUYỄN_HỮU_HUÂN - LÝ_THÁI_TỔ - NGÔ_QUYỀN - HAI_BÀ_TRƯNG - LÊ_DUẨN - GIẢI_PHÓNG - NGÃ_TƯ_VỌNG - GIẢI_PHÓNG - TRẦN_THỦ_ĐỘ - TỨ_HIỆP - ĐÊ_HỮU_HỒNG - VẠN_PHÚC
+	
