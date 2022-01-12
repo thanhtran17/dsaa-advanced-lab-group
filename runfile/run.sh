@@ -1,4 +1,3 @@
-
 gcc -fno-stack-protector -w -c bus.c
 gcc -fno-stack-protector -w -c dllist.c
 gcc -fno-stack-protector -w -c jval.c
