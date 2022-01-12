@@ -18,6 +18,19 @@ Graph createGraph()
 
 	return graph;
 }
+void trim(char *line)
+{
+	int i = strlen(line);
+
+	while (i > 0 && isspace(line[i - 1]))
+	{
+		--i;
+	}
+
+	line[i] = '\0';
+	i = strspn(line, " \t\n\v");
+	memmove(line, line + i, strlen(line + i) + 1);
+}
 //-------------------------------------------------------------------
 void addVertex(Graph g, int id, char *name)
 {
@@ -232,6 +245,7 @@ void printVertex(int v)
 {
 	printf("%4d ", v);
 }
+
 //-------------------------------------------------------------------
 void addStations(Graph g, char *station, int *vertexID)
 {
@@ -262,6 +276,7 @@ void makeBusesTable(JRB busTable, char *buses[], int size)
 	{
 		if (jrb_find_int(busTable, i + 1) == NULL)
 		{
+			trim(buses[i]);
 			jrb_insert_int(busTable, i + 1, new_jval_s(buses[i]));
 		}
 	}
@@ -296,8 +311,17 @@ void makeBusStation(Graph graph, int id_bus, int id_station, char *station_name)
 		jrb_insert_int(tree, id_station, new_jval_s(station_name));
 	}
 }
-void findStationsFromBus(Graph graph, int id_bus)
+void findStationsFromBus(Graph graph, JRB busTable, char name[256] , char allStation[1000])
 {
+	int id_bus = 0;
+	JRB node_;
+	jrb_traverse(node_, busTable){
+		if (strcmp(jval_s(node_->val), name) == 0){
+			printf("Find");
+			id_bus = jval_i(node_->key);
+		}
+	}
+	printf("%d\n", id_bus);
 	JRB node;
 	JRB ptr;
 	jrb_traverse(node, graph.edges)
@@ -308,11 +332,14 @@ void findStationsFromBus(Graph graph, int id_bus)
 			JRB tree = jval_v(node->val);
 			jrb_traverse(ptr, tree)
 			{
+				strcat(allStation, jval_s(ptr->val));
+				strcat(allStation, " ");
 				printf("%s\n", jval_s(ptr->val));
 			}
 			return;
 		}
 	}
+	strcpy(allStation, "Không có bến nào đi qua địa chỉ buýt này!");
 	printf("Không có bến nào đi qua địa chỉ buýt này!\n");
 	return;
 }
@@ -326,20 +353,43 @@ void printAllBus(JRB busTable)
 	}
 }
 //-------------------------------------------------------------------
-void printAllStations(Graph g)
+int printAllStations(Graph g)
+{
+	int length = 0;
+	JRB node;
+	jrb_traverse(node, g.vertices)
+	{
+		length++;
+		printf("%d %s\n", jval_i(node->key), jval_s(node->val));
+	}
+	return length;
+}
+int getIdStation(Graph g, char * name)
 {
 	JRB node;
 	jrb_traverse(node, g.vertices)
 	{
-		printf("%d %s\n", jval_i(node->key), jval_s(node->val));
+		if (strcmp(jval_s(node->val), name) == 0){
+			return jval_i(node->key);
+		}
 	}
+	return -1;
 }
-//-------------------------------------------------------------------
-void findAllBusesGoFromStation(Graph graph, JRB busTable)
+char * getNameStation(Graph g, int id)
 {
-	char name[256];
-	printf("Nhập tên bến xe:\n");
-	scanf("%s", name);
+	JRB node;
+	jrb_traverse(node, g.vertices)
+	{
+		if (jval_i(node->key) == id){
+			return jval_s(node->val);
+		}
+	}
+	return "NOT FOUND";
+}
+
+//-------------------------------------------------------------------
+void findAllBusesGoFromStation(Graph graph, JRB busTable, char allBus[1000], char name[256])
+{
 	JRB node;
 	int flag = 0;
 	jrb_traverse(node, graph.edges)
@@ -351,12 +401,16 @@ void findAllBusesGoFromStation(Graph graph, JRB busTable)
 			if (strcmp(jval_s(ptr->val), name) == 0)
 			{
 				flag = 1;
-				printf("%s\n", jval_s(jrb_find_int(busTable, jval_i(node->key))->val));
+				JRB find_node = jrb_find_int(busTable, jval_i(node->key));
+				strcat(allBus, jval_s(find_node->val));
+				strcat(allBus, " ");
+				printf("%s\n", jval_s(find_node->val));
 			}
 		}
 	}
 	if (flag == 0)
 	{
+		strcat(allBus, "Không có station này");
 		printf("Không có station này\n");
 	}
 	return;
