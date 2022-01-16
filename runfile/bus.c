@@ -70,6 +70,14 @@ int getVertexID(Graph g, char *name)
 	}
 	return count;
 }
+double getLengthStations(Graph g){
+	JRB node;
+	double i = 0;
+	jrb_traverse(node, g.vertices){
+		i++;
+	}
+	return i;
+}
 //-------------------------------------------------------------------
 void addEdge(Graph g, int v1, int v2, double weight)
 {
@@ -238,6 +246,7 @@ double shortestPath(Graph graph, int s, int t, int path[], int *length)
 		path[(*length)++] = a;
 		destination = node_arr[a];
 	}
+	// printf("F\n");
 	return total_weight;
 };
 //-------------------------------------------------------------------

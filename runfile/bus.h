@@ -39,6 +39,7 @@ int indegree(Graph graph, int v, int *output);
 int outdegree(Graph graph, int v, int *output);
 JRB createBusTable();
 void readFile(FILE *f1, FILE *f2, FILE *f3);
+double getLengthStations(Graph g);
 void dataProcess(Graph g, JRB bus);
 void freeGraph(Graph graph);
 JRB createBusInfo();
