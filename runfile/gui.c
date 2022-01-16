@@ -168,16 +168,10 @@ int main(int argc, char *argv[]){
     start=clock();
     storeStationList(g,ls1);
     storeBusList(busTable, ls2);
-    // ReadfileStation(g,st,ls1);
-    // ReadfileBusLine(g);
-    // ReadfileBus(bus,&length_bus);
     end=clock();
     duration=(double)(end - start) / CLOCKS_PER_SEC;
+	
     printf("/**Time to push data: %g**/\n",duration);
-    // for(i=0;i<length_bus;i++){
-    //     gtk_list_store_append(ls2,&iter);
-    //     gtk_list_store_set(ls2,&iter,0,bus[i].bus,-1);
-    // }
     set_completion(&completion1,ls1);
     set_completion(&completion2,ls1);
     set_completion(&completion4, ls1);
